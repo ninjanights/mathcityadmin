@@ -2,7 +2,7 @@ export interface LoginResponse {
   userId: string;
   fullName: string;
   email: string;
-  role: string;
+  roles: string[];
 
   accessToken: string;
   refreshToken: string;

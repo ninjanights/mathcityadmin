@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TokenService } from '../../../core/auth/token.service';
 
 import { AuthService } from '../../../core/auth/auth.service';
 
@@ -14,6 +16,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
+  private readonly tokenService = inject(TokenService);
+  private readonly router = inject(Router);
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -28,6 +32,8 @@ export class LoginComponent {
     this.auth.login(this.loginForm.getRawValue()).subscribe({
       next: (response) => {
         console.log('Login successful:', response);
+        this.tokenService.setLogin(response);
+        this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Login failed:', error);

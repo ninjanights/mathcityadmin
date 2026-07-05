@@ -1,28 +1,27 @@
 <div class="">
   <div class="mb-10">
     <button
-    type="button"
-    (click)="cancel.emit()"
-    class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-300">
-
-    <svg
+      type="button"
+      (click)="cancel.emit()"
+      class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-300"
+    >
+      <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-4 w-4"
         fill="none"
         viewBox="0 0 24 24"
-        stroke="currentColor">
-
+        stroke="currentColor"
+      >
         <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2.5"
-            d="M15 19l-7-7 7-7"/>
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
 
-    </svg>
-
-    Back to Subjects
-
-</button>
+      Back to Subjects
+    </button>
 
     <h1 class="text-3xl font-bold text-neutral-100">
       {{ subject() ? 'Edit Subject' : 'Create Subject' }}
@@ -46,7 +45,7 @@
         type="text"
         formControlName="name"
         placeholder="Mathematics"
-        class="w-full rounded-xl bg-neutral-800 px-4 py-3 text-neutral-100 placeholder:text-neutral-500 outline-none transition "
+        class="w-full rounded-xl bg-neutral-800 px-4 py-3 text-neutral-100 placeholder:text-neutral-500 outline-none transition"
       />
     </div>
 
@@ -59,87 +58,76 @@
         rows="4"
         formControlName="description"
         placeholder="Describe this subject..."
-        class="w-full rounded-xl bg-neutral-800 px-4 py-3
-       text-neutral-100 placeholder:text-neutral-500 outline-none transition "
+        class="w-full rounded-xl bg-neutral-800 px-4 py-3 text-neutral-100 placeholder:text-neutral-500 outline-none transition"
       />
     </div>
 
-  
-   <!-- Color -->
     <!-- Color -->
-<div>
-
-    <label class="mb-3 block text-sm font-medium text-neutral-400">
-
-        Color
-
-    </label>
-
-    <div class="flex flex-wrap gap-4">
-
-        @for (color of colorPalette; track color) {
-
-            <div class="flex flex-col items-center">
-
-                @if (form.get('color')?.value === color) {
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="mb-1 h-4 w-4 text-neutral-200"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="3"
-                            d="M5 13l4 4L19 7" />
-
-                    </svg>
-
-                } @else {
-
-                    <!-- Reserve the same space so circles stay aligned -->
-                    <div class="mb-1 h-4 w-4"></div>
-
-                }
-
-                <button
-                    type="button"
-                    (click)="selectColor(color)"
-                    class="h-8 w-8 rounded-full transition duration-200 hover:scale-110"
-                    [style.background]="color">
-
-                </button>
-
-            </div>
-
-        }
-
-    </div>
-
-    <p class="mt-4 font-mono text-xs text-neutral-500">
-
-        {{ form.get('color')?.value }}
-
-    </p>
-
-</div>
-
-    <!-- Display Order -->
     <div>
-      <label class="mb-2 block text-sm font-medium text-neutral-400"> Display Order </label>
+      <label class="mb-3 block text-sm font-medium text-neutral-400"> Color </label>
 
-      <input
-        type="number"
-        formControlName="displayOrder"
-        class="w-40 rounded-xl bg-neutral-800 px-4 py-3 text-neutral-100 outline-none transition "
-      />
+      <div class="flex flex-wrap gap-4">
+        @for (color of colorPalette; track color) {
+          <div class="flex flex-col items-center">
+            @if (form.get('color')?.value === color) {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="mb-1 h-4 w-4 text-neutral-200"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            } @else {
+              <!-- Reserve the same space so circles stay aligned -->
+              <div class="mb-1 h-4 w-4"></div>
+            }
+
+            <button
+              type="button"
+              (click)="selectColor(color)"
+              class="h-8 w-8 rounded-full transition duration-200 hover:scale-110"
+              [style.background]="color"
+            ></button>
+          </div>
+        }
+      </div>
+
+      <p class="mt-4 font-mono text-xs text-neutral-500">
+        {{ form.get('color')?.value }}
+      </p>
+    </div>
+    <div>
+      <label class="mb-3 block text-sm font-medium text-neutral-400"> Symbol </label>
+
+      <div class="flex flex-wrap gap-3">
+        @for (icon of icons; track icon.name) {
+          <button
+            type="button"
+            (click)="selectIcon(icon.name)"
+            class="flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 hover:bg-neutral-800"
+            [class.bg-neutral-800]="form.get('icon')?.value === icon.name"
+          >
+            <span
+              class="material-symbols-outlined text-neutral-400"
+              [class.text-yellow-300]="form.get('icon')?.value === icon.name"
+            >
+              {{ icon.name }}
+            </span>
+          </button>
+        }
+      </div>
     </div>
 
+    
     <!-- Actions -->
-    <div class="flex justify-end gap-4 border-t border-neutral-800 pt-8">
+    <div class="flex justify-end gap-4 pt-8">
       <button
         type="button"
         (click)="cancel.emit()"

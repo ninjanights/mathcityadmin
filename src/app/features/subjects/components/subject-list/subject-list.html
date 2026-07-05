@@ -1,0 +1,15 @@
+@if (subjects().length) {
+  <div class="flex flex-col gap-4">
+    @for (subject of subjects(); track subject.id) {
+      <app-subject-card 
+        [subject]="subject"
+        (edit)="edit.emit($event)"
+        (delete)="delete.emit($event)"
+        (publish)="publish.emit($event)"> 
+      </app-subject-card>
+    }
+  </div>
+} @else {
+  <p class="text-neutral-400">No subjects found.</p>
+}
+

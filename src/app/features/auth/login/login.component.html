@@ -1,9 +1,70 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <input type="email" formControlName="email" placeholder="Email" />
-  <input type="password" formControlName="password" placeholder="Password" />
-   <button
-        type="submit"
-        class="w-full bg-black text-white p-3">
-        Login
-      </button>
-</form>
+<div class="min-h-screen bg-neutral-900">
+
+  <div class="mx-auto flex min-h-screen max-w-md items-center px-6">
+
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="w-full space-y-6">
+
+     <h1 class="pb-[30px] text-center text-3xl font-bold text-neutral-500">
+  Escape Math City
+</h1>
+
+      <!-- Email -->
+      <div class="space-y-2">
+
+        <label
+          for="email"
+          class="block text-sm font-medium text-neutral-600">
+
+          Email
+
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="abc@gmail.com"
+          class="w-full rounded-full bg-neutral-800 px-4 py-3 text-neutral-200 placeholder:text-neutral-500 outline-none border-0 focus:outline-none focus:ring-0 focus:border-0" />
+
+      </div>
+
+      <!-- Password -->
+      <div class="space-y-2">
+
+        <label
+          for="password"
+          class="block text-sm font-medium text-neutral-600">
+
+          Password
+
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          class="w-full rounded-full bg-neutral-800 px-4 py-3 text-neutral-200 placeholder:text-neutral-500 outline-none border-0 focus:outline-none focus:ring-0 focus:border-0" />
+
+      </div>
+
+      <div class="flex justify-center">
+
+  <button
+    type="submit"
+    class="w-[200px] rounded-full bg-neutral-200 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100">
+
+    Login
+
+  </button>
+
+</div>
+
+    </form>
+
+  </div>
+
+</div>

@@ -1,0 +1,56 @@
+<header class="flex h-16 items-center bg-neutral-900 px-8">
+
+    <!-- Left -->
+    <div class="flex flex-1 items-center">
+
+        <h1
+            class="cursor-pointer text-2xl font-bold text-neutral-600">
+            Escape Math
+        </h1>
+
+    </div>
+
+    <!-- Center Navigation -->
+    <nav class="flex items-center gap-10">
+
+        @for(item of navigation; track item.id){
+
+            <button
+                type="button"
+                (click)="selectMenu(item)"
+                class="text-sm font-bold transition-colors duration-200"
+                [ngClass]="
+                    selectedMenu?.id === item.id
+                        ? 'text-yellow-400'
+                        : 'text-neutral-400 hover:text-neutral-200'
+                ">
+                {{ item.title }}
+            </button>
+        }
+    </nav>
+
+    <!-- Right -->
+    <div class="flex flex-1  justify-end items-center gap-4">
+
+        <div class="flex items-center gap-2 text-neutral-300">
+
+            <span class="text-xl"></span>
+
+            <span class="text-sm font-bold text-neutral-600">
+               Admin
+            </span>
+
+        </div>
+
+        <button
+            (click)="logout()"
+            class="px-4 py-2 text-sm font-bold
+              text-neutral-700 transition hover:text-red-600">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</header>

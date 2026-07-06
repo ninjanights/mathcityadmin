@@ -12,39 +12,36 @@ import { CreateSubjectRequest, SubjectResponse } from '../../models';
 })
 export class SubjectForm implements OnChanges {
   private readonly fb = inject(FormBuilder);
-
+  positions = input<number[]>([]);
   subject = input<SubjectResponse>();
   icons = MATERIAL_ICONS;
   save = output<CreateSubjectRequest>();
   cancel = output<void>();
 
-  colorPalette = [
-    '#EF4444', // Red
-    '#F97316', // Orange
-    '#F59E0B', // Amber
-    '#EAB308', // Yellow
-    '#84CC16', // Lime
-    '#22C55E', // Green
-    '#14B8A6', // Teal
-    '#06B6D4', // Cyan
-    '#3B82F6', // Blue
-    '#6366F1', // Indigo
-    '#8B5CF6', // Violet
-    '#A855F7', // Purple
-    '#EC4899', // Pink
-    '#6B7280', // Gray
+  readonly colorPalette = [
+    { hex: '#EF4444', name: 'Red' },
+    { hex: '#F97316', name: 'Orange' },
+    { hex: '#F59E0B', name: 'Amber' },
+    { hex: '#EAB308', name: 'Yellow' },
+    { hex: '#84CC16', name: 'Lime' },
+    { hex: '#22C55E', name: 'Green' },
+    { hex: '#14B8A6', name: 'Teal' },
+    { hex: '#06B6D4', name: 'Cyan' },
+    { hex: '#3B82F6', name: 'Blue' },
+    { hex: '#6366F1', name: 'Indigo' },
+    { hex: '#8B5CF6', name: 'Violet' },
+    { hex: '#A855F7', name: 'Purple' },
+    { hex: '#EC4899', name: 'Pink' },
+    { hex: '#6B7280', name: 'Gray' },
   ];
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(100)]],
-
     description: ['', [Validators.maxLength(500)]],
-
     icon: ['school', [Validators.maxLength(100)]],
-
-    color: ['#2563EB', Validators.required],
-
-    displayOrder: [0, Validators.min(0)],
+    color: ['#6B7280', Validators.required],
+    displayOrder: [1, [Validators.required, Validators.min(1)]],
+    isPublished: [false, Validators.required],
   });
 
   selectColor(color: string): void {
@@ -53,24 +50,40 @@ export class SubjectForm implements OnChanges {
     });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges() {
     const sub = this.subject();
-    if (!sub) return;
 
-    this.form.patchValue({
-      name: sub.name,
-      description: sub.description || '',
-      icon: sub.icon || '',
-      color: sub.color,
-      displayOrder: sub.displayOrder,
-    });
+    if (sub) {
+      this.form.patchValue({
+        name: sub.name,
+        description: sub.description ?? '',
+        icon: sub.icon,
+        color: sub.color,
+        displayOrder: sub.displayOrder,
+        isPublished: sub.isPublished,
+      });
+    } else {
+      this.form.patchValue({
+        displayOrder: this.positions().length,
+        color: "#6B7280",
+        isPublished: false,
+      });
+    }
+  }
+
+
+  getSelectedColor() {
+    const hex = this.form.controls.color.value;
+    return this.colorPalette.find((color) => color.hex === hex) ?? null;
   }
 
   selectIcon(icon: string) {
-  this.form.patchValue({
-    icon,
-  });
-}
+    this.form.patchValue({
+      icon,
+    });
+  }
+
+  
 
   submit(): void {
     if (this.form.invalid) {

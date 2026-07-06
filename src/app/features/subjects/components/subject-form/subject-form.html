@@ -23,17 +23,52 @@
       Back to Subjects
     </button>
 
-    <h1 class="text-3xl font-bold text-neutral-100">
-      {{ subject() ? 'Edit Subject' : 'Create Subject' }}
-    </h1>
+    <div class="flex max-w-5xl justify-between gap-2">
+      <div>
+        <h1 class="text-3xl font-bold text-neutral-100">
+          {{ subject() ? 'Edit Subject' : 'Create Subject' }}
+        </h1>
 
-    <p class="mt-2 text-sm text-neutral-500">
-      {{
-        subject()
-          ? 'Update the information for this subject.'
-          : 'Create a new subject for your learning platform.'
-      }}
-    </p>
+        <p class="mt-2 text-sm text-neutral-500">
+          {{
+            subject()
+              ? 'Update the information for this subject.'
+              : 'Create a new subject for your learning platform.'
+          }}
+        </p>
+      </div>
+
+      <!-- Status -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-1 rounded-full bg-neutral-800 p-1 w-fit">
+          <button
+            type="button"
+            (click)="form.controls.isPublished.setValue(true)"
+            [class]="
+              form.controls.isPublished.value
+                ? 'rounded-full bg-neutral-700 px-4 py-1.5 text-neutral-100 transition'
+                : 'rounded-full px-4 py-1.5 text-neutral-400 transition hover:text-neutral-200'
+            "
+          >
+            Published
+          </button>
+
+          <span class="text-neutral-600">•</span>
+
+          <button
+            type="button"
+            (click)="form.controls.isPublished.setValue(false)"
+            [class]="
+              !form.controls.isPublished.value
+                ? 'rounded-full bg-neutral-700 px-4 py-1.5 text-neutral-100 transition'
+                : 'rounded-full px-4 py-1.5 text-neutral-400 transition hover:text-neutral-200'
+            "
+          >
+            Draft
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="max-w-5xl space-y-8">
@@ -66,66 +101,105 @@
     <div>
       <label class="mb-3 block text-sm font-medium text-neutral-400"> Color </label>
 
-      <div class="flex flex-wrap gap-4">
-        @for (color of colorPalette; track color) {
-          <div class="flex flex-col items-center">
-            @if (form.get('color')?.value === color) {
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="mb-1 h-4 w-4 text-neutral-200"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="3"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            } @else {
-              <!-- Reserve the same space so circles stay aligned -->
-              <div class="mb-1 h-4 w-4"></div>
-            }
+      <div class="flex align-middle justify-between">
+        <div class="flex flex-wrap gap-4">
+          @for (color of colorPalette; track color.hex) {
+            <div class="flex flex-col items-center">
+              @if (form.get('color')?.value === color.hex) {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mb-1 h-4 w-4 text-neutral-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="3"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              } @else {
+                <!-- Reserve the same space so circles stay aligned -->
+                <div class="mb-1 h-4 w-4"></div>
+              }
 
-            <button
-              type="button"
-              (click)="selectColor(color)"
-              class="h-8 w-8 rounded-full transition duration-200 hover:scale-110"
-              [style.background]="color"
-            ></button>
-          </div>
-        }
+              <button
+                type="button"
+                (click)="selectColor(color.hex)"
+                class="h-7 w-7 rounded-full transition duration-200 hover:scale-110"
+                [style.background]="color.hex"
+              ></button>
+            </div>
+          }
+        </div>
+        <div>
+          <p class="mt-4 font-mono text-xs text-neutral-500">
+            {{ getSelectedColor()?.name }}
+            ·
+            {{ getSelectedColor()?.hex }}
+          </p>
+        </div>
       </div>
-
-      <p class="mt-4 font-mono text-xs text-neutral-500">
-        {{ form.get('color')?.value }}
-      </p>
     </div>
+
+    <!-- Icon -->
     <div>
       <label class="mb-3 block text-sm font-medium text-neutral-400"> Symbol </label>
-
-      <div class="flex flex-wrap gap-3">
-        @for (icon of icons; track icon.name) {
-          <button
-            type="button"
-            (click)="selectIcon(icon.name)"
-            class="flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 hover:bg-neutral-800"
-            [class.bg-neutral-800]="form.get('icon')?.value === icon.name"
-          >
-            <span
-              class="material-symbols-outlined text-neutral-400"
-              [class.text-yellow-300]="form.get('icon')?.value === icon.name"
+      <div class="flex items-center justify-between gap-8">
+        <div class="flex flex-wrap gap-1">
+          @for (icon of icons; track icon.name) {
+            <button
+              type="button"
+              (click)="selectIcon(icon.name)"
+              class="flex h-9 w-9 items-center justify-center rounded-full transition-colors 
+              duration-200 hover:bg-neutral-800"
+              [class.bg-neutral-800]="form.get('icon')?.value === icon.name"
             >
-              {{ icon.name }}
-            </span>
-          </button>
-        }
+              <span
+                class="material-symbols-outlined text-neutral-400"
+                [class.text-yellow-300]="form.get('icon')?.value === icon.name"
+              >
+                {{ icon.name }}
+              </span>
+            </button>
+          }
+        </div>
+        <p class="mt-4 font-mono text-xs text-neutral-500">
+          {{ form.get('icon')?.value }}
+        </p>
       </div>
     </div>
 
-    
+ <div>
+  <label class="mb-3 block text-sm font-medium text-neutral-400">
+    Display Order
+  </label>
+
+  <div class="flex flex-wrap gap-2">
+
+    @for (position of positions(); track position) {
+
+      <button
+        type="button"
+        (click)="form.controls.displayOrder.setValue(position)"
+        class="rounded-full px-3 py-1.5 text-sm transition"
+
+        [class.bg-neutral-800]="form.controls.displayOrder.value === position"
+        [class.text-neutral-100]="form.controls.displayOrder.value === position"
+
+        [class.text-neutral-500]="form.controls.displayOrder.value !== position"
+        [class.hover:bg-neutral-900]="form.controls.displayOrder.value !== position"
+      >
+        {{ position }}
+      </button>
+
+    }
+
+  </div>
+</div>
+
     <!-- Actions -->
     <div class="flex justify-end gap-4 pt-8">
       <button

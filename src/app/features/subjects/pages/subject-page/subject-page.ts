@@ -1,8 +1,8 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { SubjectService } from '../../services';
 import { CreateSubjectRequest, SubjectListResponse, SubjectResponse } from '../../models';
-import { SubjectForm, SubjectHeader } from "../../components";
-import { SubjectList } from "../../components/subject-list/subject-list";
+import { SubjectForm, SubjectHeader } from '../../components';
+import { SubjectList } from '../../components/subject-list/subject-list';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './subject-page.html',
   imports: [SubjectHeader, SubjectList, SubjectForm, CommonModule],
-  styleUrl: './subject-page.css'
+  styleUrl: './subject-page.css',
 })
 export class SubjectPage implements OnInit {
   private readonly subjectService = inject(SubjectService);
@@ -50,7 +50,7 @@ export class SubjectPage implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -74,9 +74,20 @@ export class SubjectPage implements OnInit {
         this.selectedSubject.set(response.data);
         this.isEditing.set(true);
         this.isCreating.set(false);
-      }
+      },
     });
   }
+
+  positions = computed(() => {
+    const count = this.subjects().length;
+
+    return Array.from(
+      {
+        length: this.isEditing() ? count : count + 1,
+      },
+      (_, i) => i + 1,
+    );
+  });
 
   onPublish(subject: SubjectListResponse) {
     this.subjectService.getSubjectById(subject.id).subscribe({
@@ -87,15 +98,14 @@ export class SubjectPage implements OnInit {
           description: fullSubject.description,
           icon: fullSubject.icon,
           color: fullSubject.color,
-          displayOrder: fullSubject.displayOrder,
-          isPublished: !fullSubject.isPublished
+          isPublished: !fullSubject.isPublished,
         };
         this.subjectService.updateSubject(subject.id, updateRequest).subscribe({
           next: () => {
             this.loadSubjects();
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -104,7 +114,7 @@ export class SubjectPage implements OnInit {
       this.subjectService.deleteSubject(subject.id).subscribe({
         next: () => {
           this.loadSubjects();
-        }
+        },
       });
     }
   }
@@ -114,20 +124,20 @@ export class SubjectPage implements OnInit {
       const id = this.selectedSubject()!.id;
       const updateRequest = {
         ...request,
-        isPublished: this.selectedSubject()!.isPublished
+        isPublished: this.selectedSubject()!.isPublished,
       };
       this.subjectService.updateSubject(id, updateRequest).subscribe({
         next: () => {
           this.onCancel();
           this.loadSubjects();
-        }
+        },
       });
     } else {
       this.subjectService.createSubject(request).subscribe({
         next: () => {
           this.onCancel();
           this.loadSubjects();
-        }
+        },
       });
     }
   }
@@ -138,4 +148,3 @@ export class SubjectPage implements OnInit {
     this.selectedSubject.set(undefined);
   }
 }
-

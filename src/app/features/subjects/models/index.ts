@@ -6,6 +6,7 @@ export interface CreateSubjectRequest {
   icon?: string;
   color: string;
   displayOrder: number;
+  isPublished: boolean;
 }
 
 export interface UpdateSubjectRequest {
@@ -13,7 +14,6 @@ export interface UpdateSubjectRequest {
   description?: string;
   icon?: string;
   color: string;
-  displayOrder: number;
   isPublished: boolean;
 }
 
@@ -25,6 +25,8 @@ export interface SubjectListResponse {
   slug: string;
   icon?: string;
   color: string;
+  description?: string;
+  isPublished: boolean;
 }
 
 export interface SubjectResponse {

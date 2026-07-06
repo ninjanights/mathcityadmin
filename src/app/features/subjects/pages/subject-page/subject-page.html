@@ -1,13 +1,14 @@
 @if (isCreating() || isEditing()) {
   <app-subject-form
     [subject]="selectedSubject()"
+    [positions]="positions()"
     (save)="onSave($event)"
     (cancel)="onCancel()"
   ></app-subject-form>
 } @else {
   @if (loading()) {
     <div class="flex items-center justify-center py-12">
-      <p class="text-neutral-400 font-semibold animate-pulse">Loading subjects...</p>
+      <p class="text-neutral-400 font-semibold animate-pulse">Loading Subjects...</p>
     </div>
   } @else {
     <app-subject-header

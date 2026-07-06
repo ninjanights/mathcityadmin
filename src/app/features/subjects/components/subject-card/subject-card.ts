@@ -7,11 +7,8 @@ import { SubjectListResponse } from '../../models';
   templateUrl: './subject-card.html'
 })
 export class SubjectCardComponent {
-
   subject = input.required<SubjectListResponse>();
-
   edit = output<SubjectListResponse>();
   delete = output<SubjectListResponse>();
   publish = output<SubjectListResponse>();
-
 }

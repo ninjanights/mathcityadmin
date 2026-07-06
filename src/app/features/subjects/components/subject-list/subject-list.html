@@ -1,5 +1,5 @@
 @if (subjects().length) {
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-2">
     @for (subject of subjects(); track subject.id) {
       <app-subject-card 
         [subject]="subject"
@@ -10,6 +10,5 @@
     }
   </div>
 } @else {
-  <p class="text-neutral-400">No subjects found.</p>
+  <p class="text-neutral-500 dark:text-neutral-400">No subjects found.</p>
 }
-

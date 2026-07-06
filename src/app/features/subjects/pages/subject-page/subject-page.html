@@ -8,20 +8,22 @@
 } @else {
   @if (loading()) {
     <div class="flex items-center justify-center py-12">
-      <p class="text-neutral-400 font-semibold animate-pulse">Loading Subjects...</p>
+      <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">Loading Subjects...</p>
     </div>
   } @else {
-    <app-subject-header
-      (create)="onCreate()"
-      (search)="onSearch($event)"
-      (sort)="onSort($event)"
-    ></app-subject-header>
-    <app-subject-list
-      [subjects]="sortedSubjects()"
-      [loading]="loading()"
-      (edit)="onEdit($event)"
-      (delete)="onDelete($event)"
-      (publish)="onPublish($event)"
-    ></app-subject-list>
+    <div class="flex flex-col gap-2">
+      <app-subject-header
+        (create)="onCreate()"
+        (search)="onSearch($event)"
+        (sort)="onSort($event)"
+      ></app-subject-header>
+      <app-subject-list
+        [subjects]="sortedSubjects()"
+        [loading]="loading()"
+        (edit)="onEdit($event)"
+        (delete)="onDelete($event)"
+        (publish)="onPublish($event)"
+      ></app-subject-list>
+    </div>
   }
 }

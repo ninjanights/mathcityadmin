@@ -1,12 +1,15 @@
-<aside class="w-64 bg-neutral-900">
-  <nav class="flex flex-col py-4">
+<aside class="w-56 bg-neutral-200 rounded-3xl dark:bg-neutral-800">
+  <nav class="flex flex-col py-[2px] px-[2px] gap-[2px]">
     @for (item of items; track item.id) {
       <a
         [routerLink]="item.route"
-        routerLinkActive="'text-yellow-400"
-        class="flex items-center gap-3 px-8 py-3 text-sm font-medium text-neutral-400 hover:text-neutral-200"
+        routerLinkActive="text-teal-500 bg-neutral-300 dark:bg-[#313131]"
+        class="flex items-center gap-3 px-5 py-2.5 rounded-full text-sm font-medium text-neutral-500
+         hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200
+    "
       >
-        <span>{{ item.title }}</span>
+        <span 
+        class="">{{ item.title }}</span>
       </a>
     }
   </nav>

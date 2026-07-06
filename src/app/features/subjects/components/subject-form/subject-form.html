@@ -1,9 +1,9 @@
-<div class="">
+<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
   <div class="mb-10">
     <button
       type="button"
       (click)="cancel.emit()"
-      class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-300"
+      class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-300"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@
 
     <div class="flex max-w-5xl justify-between gap-2">
       <div>
-        <h1 class="text-3xl font-bold text-neutral-100">
+        <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
           {{ subject() ? 'Edit Subject' : 'Create Subject' }}
         </h1>
 
@@ -40,28 +40,28 @@
 
       <!-- Status -->
       <div class="space-y-2">
-        <div class="flex items-center gap-1 rounded-full bg-neutral-800 p-1 w-fit">
+        <div class="flex items-center gap-1 rounded-full bg-neutral-100 p-1 w-fit dark:bg-[#313131]">
           <button
             type="button"
             (click)="form.controls.isPublished.setValue(true)"
             [class]="
               form.controls.isPublished.value
-                ? 'rounded-full bg-neutral-700 px-4 py-1.5 text-neutral-100 transition'
-                : 'rounded-full px-4 py-1.5 text-neutral-400 transition hover:text-neutral-200'
+                ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-teal-500 transition dark:bg-neutral-800'
+                : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
             "
           >
             Published
           </button>
 
-          <span class="text-neutral-600">•</span>
+          <span class="text-neutral-300 dark:text-neutral-600">•</span>
 
           <button
             type="button"
             (click)="form.controls.isPublished.setValue(false)"
             [class]="
               !form.controls.isPublished.value
-                ? 'rounded-full bg-neutral-700 px-4 py-1.5 text-neutral-100 transition'
-                : 'rounded-full px-4 py-1.5 text-neutral-400 transition hover:text-neutral-200'
+                ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-teal-500 transition dark:bg-neutral-800'
+                : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
             "
           >
             Draft
@@ -71,35 +71,35 @@
     </div>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="max-w-5xl space-y-8">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="max-w-5xl space-y-6">
     <!-- Name -->
     <div>
-      <label class="mb-2 block text-sm font-medium text-neutral-400"> Name </label>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400"> Name </label>
 
       <input
         type="text"
         formControlName="name"
         placeholder="Mathematics"
-        class="w-full rounded-xl bg-neutral-800 px-4 py-3 text-neutral-100 placeholder:text-neutral-500 outline-none transition"
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none transition dark:bg-[#313131] dark:text-neutral-100 dark:placeholder:text-neutral-500"
       />
     </div>
 
     <!-- Description -->
     <div>
-      <label class="mb-2 block text-sm font-medium text-neutral-400"> Description </label>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400"> Description </label>
 
       <input
         type="text"
         rows="4"
         formControlName="description"
         placeholder="Describe this subject..."
-        class="w-full rounded-xl bg-neutral-800 px-4 py-3 text-neutral-100 placeholder:text-neutral-500 outline-none transition"
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none transition dark:bg-[#313131] dark:text-neutral-100 dark:placeholder:text-neutral-500"
       />
     </div>
 
     <!-- Color -->
     <div>
-      <label class="mb-3 block text-sm font-medium text-neutral-400"> Color </label>
+      <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400"> Color </label>
 
       <div class="flex align-middle justify-between">
         <div class="flex flex-wrap gap-4">
@@ -108,7 +108,7 @@
               @if (form.get('color')?.value === color.hex) {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="mb-1 h-4 w-4 text-neutral-200"
+                  class="mb-1 h-4 w-4 text-neutral-700 dark:text-neutral-200"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -146,20 +146,22 @@
 
     <!-- Icon -->
     <div>
-      <label class="mb-3 block text-sm font-medium text-neutral-400"> Symbol </label>
+      <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400"> Symbol </label>
       <div class="flex items-center justify-between gap-8">
         <div class="flex flex-wrap gap-1">
           @for (icon of icons; track icon.name) {
             <button
               type="button"
               (click)="selectIcon(icon.name)"
-              class="flex h-9 w-9 items-center justify-center rounded-full transition-colors 
-              duration-200 hover:bg-neutral-800"
-              [class.bg-neutral-800]="form.get('icon')?.value === icon.name"
+              [class]="
+                form.get('icon')?.value === icon.name
+                  ? 'flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 transition-colors duration-200 dark:bg-[#313131]'
+                  : 'flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-[#313131]'
+              "
             >
               <span
-                class="material-symbols-outlined text-neutral-400"
-                [class.text-yellow-300]="form.get('icon')?.value === icon.name"
+                class="material-symbols-outlined text-neutral-500 dark:text-neutral-400"
+                [class.text-teal-500]="form.get('icon')?.value === icon.name"
               >
                 {{ icon.name }}
               </span>
@@ -173,7 +175,7 @@
     </div>
 
  <div>
-  <label class="mb-3 block text-sm font-medium text-neutral-400">
+  <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
     Display Order
   </label>
 
@@ -184,13 +186,11 @@
       <button
         type="button"
         (click)="form.controls.displayOrder.setValue(position)"
-        class="rounded-full px-3 py-1.5 text-sm transition"
-
-        [class.bg-neutral-800]="form.controls.displayOrder.value === position"
-        [class.text-neutral-100]="form.controls.displayOrder.value === position"
-
-        [class.text-neutral-500]="form.controls.displayOrder.value !== position"
-        [class.hover:bg-neutral-900]="form.controls.displayOrder.value !== position"
+        [class]="
+          form.controls.displayOrder.value === position
+            ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-teal-500 transition dark:bg-[#313131]'
+            : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
+        "
       >
         {{ position }}
       </button>
@@ -205,14 +205,14 @@
       <button
         type="button"
         (click)="cancel.emit()"
-        class="rounded-full px-6 py-3 text-sm font-semibold text-neutral-400 transition hover:bg-neutral-800 hover:text-white cursor-pointer"
+        class="rounded-full px-6 py-3 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 cursor-pointer dark:text-neutral-400 dark:hover:bg-[#313131] dark:hover:text-white"
       >
         Cancel
       </button>
 
       <button
         type="submit"
-        class="rounded-full bg-yellow-300 px-8 py-3 text-sm font-bold text-black transition hover:bg-yellow-200 cursor-pointer"
+        class="rounded-full bg-teal-500 px-8 py-3 text-sm font-bold text-black transition hover:bg-teal-400 cursor-pointer"
       >
         {{ subject() ? 'Update Subject' : 'Create Subject' }}
       </button>

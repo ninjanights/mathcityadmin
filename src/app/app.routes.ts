@@ -43,6 +43,13 @@ export const routes: Routes = [
       },
 
       {
+        path: 'chapters',
+        loadChildren: () =>
+          import('./features/chapters/chapters.routes')
+            .then(m => m.chaptersRoutes)
+      },
+
+      {
         path: 'topics',
         loadChildren: () =>
           import('./features/topics/topics.routes')

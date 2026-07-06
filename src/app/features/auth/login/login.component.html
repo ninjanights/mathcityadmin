@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-neutral-900">
+<div class="min-h-screen bg-neutral-50 dark:bg-neutral-900">
 
   <div class="mx-auto flex min-h-screen max-w-md items-center px-6">
 
@@ -7,7 +7,7 @@
       (ngSubmit)="onSubmit()"
       class="w-full space-y-6">
 
-     <h1 class="pb-[30px] text-center text-3xl font-bold text-neutral-500">
+     <h1 class="pb-[30px] text-center text-3xl font-bold text-neutral-800 dark:text-neutral-500">
   Escape Math City
 </h1>
 
@@ -16,7 +16,7 @@
 
         <label
           for="email"
-          class="block text-sm font-medium text-neutral-600">
+          class="block text-sm font-medium text-neutral-500 dark:text-neutral-600">
 
           Email
 
@@ -27,7 +27,7 @@
           type="email"
           formControlName="email"
           placeholder="abc@gmail.com"
-          class="w-full rounded-full bg-neutral-800 px-4 py-3 text-neutral-200 placeholder:text-neutral-500 outline-none border-0 focus:outline-none focus:ring-0 focus:border-0" />
+          class="w-full rounded-full bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none border-0 focus:outline-none focus:ring-0 focus:border-0 dark:bg-[#313131] dark:text-neutral-200 dark:placeholder:text-neutral-500" />
 
       </div>
 
@@ -36,7 +36,7 @@
 
         <label
           for="password"
-          class="block text-sm font-medium text-neutral-600">
+          class="block text-sm font-medium text-neutral-500 dark:text-neutral-600">
 
           Password
 
@@ -47,7 +47,7 @@
           type="password"
           formControlName="password"
           placeholder="••••••••"
-          class="w-full rounded-full bg-neutral-800 px-4 py-3 text-neutral-200 placeholder:text-neutral-500 outline-none border-0 focus:outline-none focus:ring-0 focus:border-0" />
+          class="w-full rounded-full bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none border-0 focus:outline-none focus:ring-0 focus:border-0 dark:bg-[#313131] dark:text-neutral-200 dark:placeholder:text-neutral-500" />
 
       </div>
 
@@ -55,7 +55,7 @@
 
   <button
     type="submit"
-    class="w-[200px] rounded-full bg-neutral-200 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100">
+    class="w-[200px] rounded-full bg-teal-500 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-teal-400">
 
     Login
 

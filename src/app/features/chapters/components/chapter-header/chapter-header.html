@@ -1,15 +1,19 @@
-<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-3xl bg-neutral-200 px-4 py-3 dark:bg-neutral-800">
+<div class="flex flex-col gap-3 rounded-3xl bg-neutral-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:bg-neutral-800">
   <div>
-    <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-200">Subjects</h1>
-
-    <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-500">Manage all learning Subjects.</p>
+    <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-200">Chapters</h1>
+    <p class="mt-1 text-sm text-neutral-500">Manage subject chapters.</p>
   </div>
 
   <div class="flex flex-wrap items-center gap-3">
-    <app-subject-search (searchChanged)="onSearch($event)"> </app-subject-search>
+    <input
+      [(ngModel)]="query"
+      (ngModelChange)="search.emit($event)"
+      type="text"
+      placeholder="Search Chapters..."
+      class="w-64 rounded-full bg-neutral-100 px-4 py-2 text-md text-neutral-900 placeholder:text-neutral-400 outline-none transition-all dark:bg-[#313131] dark:text-neutral-200 dark:placeholder-neutral-500"
+    />
 
-    <div class="flex items-center gap-1 rounded-full 
-    bg-neutral-100 p-1 text-sm dark:bg-[#313131]">
+    <div class="flex items-center gap-1 rounded-full bg-neutral-100 p-1 text-sm dark:bg-[#313131]">
       <button
         type="button"
         (click)="setSort('asc')"
@@ -38,10 +42,11 @@
     </div>
 
     <button
+      type="button"
       (click)="create.emit()"
-      class="rounded-full bg-teal-500 px-5 py-2 text-sm text-black transition font-bold hover:bg-teal-400 cusor-pointer"
+      class="rounded-full bg-teal-500 px-5 py-2 text-sm font-bold text-black transition hover:bg-teal-400 cursor-pointer"
     >
-      + Add Subject
+      + Add Chapter
     </button>
   </div>
 </div>

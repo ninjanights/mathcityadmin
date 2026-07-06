@@ -1,0 +1,31 @@
+@if (isCreating() || isEditing()) {
+  <app-chapter-form
+    [chapter]="selectedChapter()"
+    [subjects]="subjects()"
+    (save)="onSave($event)"
+    (cancel)="onCancel()"
+  ></app-chapter-form>
+} @else {
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">
+        Loading Chapters...
+      </p>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-2">
+      <app-chapter-header
+        (create)="onCreate()"
+        (search)="onSearch($event)"
+        (sort)="onSort($event)"
+      ></app-chapter-header>
+
+      <app-chapter-list
+        [chapters]="sortedChapters()"
+        [subjects]="subjects()"
+        (edit)="onEdit($event)"
+        (delete)="onDelete($event)"
+      ></app-chapter-list>
+    </div>
+  }
+}

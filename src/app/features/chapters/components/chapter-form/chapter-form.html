@@ -1,0 +1,118 @@
+<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
+  <div class="mb-10">
+    <button
+      type="button"
+      (click)="cancel.emit()"
+      class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-300"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+
+      Back to Chapters
+    </button>
+
+    <div>
+      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+        {{ chapter() ? 'Edit Chapter' : 'Create Chapter' }}
+      </h1>
+
+      <p class="mt-2 text-sm text-neutral-500">
+        {{ chapter() ? 'Update this chapter.' : 'Create a chapter under a subject.' }}
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="max-w-5xl space-y-6">
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Subject
+      </label>
+
+      <select
+        formControlName="subjectId"
+        [attr.disabled]="chapter() ? true : null"
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none transition dark:bg-[#313131] dark:text-neutral-100"
+      >
+        <option value="">Select subject</option>
+        @for (subject of subjects(); track subject.id) {
+          <option [value]="subject.id">{{ subject.name }}</option>
+        }
+      </select>
+
+      @if (selectedSubject()) {
+        <p class="mt-2 text-xs text-neutral-500">
+          Chapter will belong to {{ selectedSubject()?.name }}.
+        </p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Title
+      </label>
+
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Linear Equations"
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none transition dark:bg-[#313131] dark:text-neutral-100 dark:placeholder:text-neutral-500"
+      />
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Description
+      </label>
+
+      <input
+        type="text"
+        formControlName="description"
+        placeholder="Intro to this chapter..."
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none transition dark:bg-[#313131] dark:text-neutral-100 dark:placeholder:text-neutral-500"
+      />
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Display Order
+      </label>
+
+      <input
+        type="number"
+        min="0"
+        formControlName="displayOrder"
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none transition dark:bg-[#313131] dark:text-neutral-100 dark:placeholder:text-neutral-500"
+      />
+    </div>
+
+    <div class="flex justify-end gap-4 pt-8">
+      <button
+        type="button"
+        (click)="cancel.emit()"
+        class="rounded-full px-6 py-3 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 cursor-pointer dark:text-neutral-400 dark:hover:bg-[#313131] dark:hover:text-white"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="rounded-full bg-teal-500 px-8 py-3 text-sm font-bold text-black transition hover:bg-teal-400 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+      >
+        {{ chapter() ? 'Update Chapter' : 'Create Chapter' }}
+      </button>
+    </div>
+  </form>
+</div>

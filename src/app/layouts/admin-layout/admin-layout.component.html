@@ -1,25 +1,11 @@
-<div class="min-h-screen bg- bg-neutral-900">
-
-    <div class="mx-auto flex min-h-screen max-w-[1600px] flex-col px-8">
-
-        <app-navbar
-            (menuSelected)="onMenuSelected($event)">
-        </app-navbar>
-
-        <div class="flex flex-1">
-
-            <app-sidenav
-                [items]="selectedMenu.children ?? []">
-            </app-sidenav>
-
-            <main class="flex-1 py-8 pl-8">
-
-                <router-outlet></router-outlet>
-
-            </main>
-
-        </div>
-
+<div class="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+  <div class="mx-auto flex min-h-screen max-w-[1280px] flex-col px-4">
+    <app-navbar (menuSelected)="onMenuSelected($event)"> </app-navbar>
+    <div class="flex flex-1 gap-2">
+      <app-sidenav [items]="selectedMenu.children ?? []"> </app-sidenav>
+      <main class="flex-1">
+        <router-outlet></router-outlet>
+      </main>
     </div>
-
+  </div>
 </div>

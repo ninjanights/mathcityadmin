@@ -1,17 +1,43 @@
-<header class="flex h-16 items-center bg-neutral-900 px-8">
+<header class="flex h-16 items-center bg-neutral-50 px-4 dark:bg-neutral-900">
 
     <!-- Left -->
-    <div class="flex flex-1 items-center">
+    <div class="flex flex-1 items-center gap-4">
 
         <h1
-            class="cursor-pointer text-2xl font-bold text-neutral-600">
-            Escape Math
+            class="shrink-0 cursor-pointer whitespace-nowrap text-2xl font-bold text-neutral-800 dark:text-neutral-600">
+            Escape Math City
         </h1>
+
+        <div class="flex shrink-0 items-center gap-2 whitespace-nowrap text-[11px] font-bold">
+            <button
+                type="button"
+                (click)="theme.setTheme(false)"
+                [class]="
+                    !isDark()
+                        ? 'text-teal-500'
+                        : 'text-neutral-400 transition hover:text-neutral-700 dark:text-neutral-600 dark:hover:text-neutral-300'
+                ">
+                in day light
+            </button>
+
+            <span class="text-neutral-300 dark:text-neutral-700">•</span>
+
+            <button
+                type="button"
+                (click)="theme.setTheme(true)"
+                [class]="
+                    isDark()
+                        ? 'text-teal-500'
+                        : 'text-neutral-400 transition hover:text-neutral-700 dark:text-neutral-600 dark:hover:text-neutral-300'
+                ">
+                tonight
+            </button>
+        </div>
 
     </div>
 
     <!-- Center Navigation -->
-    <nav class="flex items-center gap-10">
+    <nav class="flex items-center gap-6 pl-10">
 
         @for(item of navigation; track item.id){
 
@@ -21,8 +47,8 @@
                 class="text-sm font-bold transition-colors duration-200"
                 [ngClass]="
                     selectedMenu?.id === item.id
-                        ? 'text-yellow-400'
-                        : 'text-neutral-400 hover:text-neutral-200'
+                        ? 'text-teal-500'
+                        : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
                 ">
                 {{ item.title }}
             </button>
@@ -30,13 +56,13 @@
     </nav>
 
     <!-- Right -->
-    <div class="flex flex-1  justify-end items-center gap-4">
+    <div class="flex flex-1  justify-end items-center gap-3">
 
-        <div class="flex items-center gap-2 text-neutral-300">
+        <div class="flex items-center gap-2 text-neutral-500 dark:text-neutral-300">
 
             <span class="text-xl"></span>
 
-            <span class="text-sm font-bold text-neutral-600">
+            <span class="text-sm font-bold text-neutral-500 dark:text-neutral-600">
                Admin
             </span>
 
@@ -44,8 +70,8 @@
 
         <button
             (click)="logout()"
-            class="px-4 py-2 text-sm font-bold
-              text-neutral-700 transition hover:text-red-600">
+            class="px-3 py-2 text-sm font-bold
+              text-neutral-500 transition hover:text-red-600 dark:text-neutral-700">
 
             Logout
 

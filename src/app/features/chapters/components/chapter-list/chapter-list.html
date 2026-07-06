@@ -1,0 +1,15 @@
+@if (chapters().length) {
+  <div class="flex flex-col gap-2">
+    @for (chapter of chapters(); track chapter.id) {
+      <app-chapter-card
+        [chapter]="chapter"
+        [subjectName]="subjectName(chapter.subjectId)"
+        [subjectColor]="subjectColor(chapter.subjectId)"
+        (edit)="edit.emit($event)"
+        (delete)="delete.emit($event)"
+      ></app-chapter-card>
+    }
+  </div>
+} @else {
+  <p class="text-neutral-500 dark:text-neutral-400">No chapters found.</p>
+}

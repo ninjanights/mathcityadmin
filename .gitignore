@@ -5,7 +5,7 @@ node_modules/
 
 # Angular build output
 /dist/
-out-tsc/
+cout-tsc/
 tmp/
 .angular/
 .angular-cache/

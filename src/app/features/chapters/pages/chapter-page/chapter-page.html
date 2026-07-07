@@ -4,6 +4,7 @@
     [subjects]="subjects()"
     (save)="onSave($event)"
     (cancel)="onCancel()"
+    [positions]="isEditing() ? editPositions() : createPositions()"
   ></app-chapter-form>
 } @else {
   @if (loading()) {

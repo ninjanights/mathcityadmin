@@ -45,6 +45,19 @@ export class ChapterPage implements OnInit {
     this.loadChapters();
   }
 
+createPositions = computed(() =>
+  Array.from(
+    { length: this.chapters().length + 1 },
+    (_, i) => i + 1
+  )
+);
+
+editPositions = computed(() =>
+  Array.from(
+    { length: this.chapters().length },
+    (_, i) => i + 1
+  )
+);
   loadSubjects(): void {
     this.subjectService.getSubjects().subscribe({
       next: (response) => {
@@ -55,9 +68,12 @@ export class ChapterPage implements OnInit {
 
   loadChapters(search?: string): void {
     this.loading.set(true);
+
     this.chapterService.getChapters(search).subscribe({
       next: (response) => {
         this.chapters.set(response.data);
+
+       
         this.loading.set(false);
       },
       error: () => {

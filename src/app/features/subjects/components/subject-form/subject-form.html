@@ -46,7 +46,7 @@
             (click)="form.controls.isPublished.setValue(true)"
             [class]="
               form.controls.isPublished.value
-                ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-teal-500 transition dark:bg-neutral-800'
+                ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-pink-400 transition dark:bg-neutral-800'
                 : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
             "
           >
@@ -60,7 +60,7 @@
             (click)="form.controls.isPublished.setValue(false)"
             [class]="
               !form.controls.isPublished.value
-                ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-teal-500 transition dark:bg-neutral-800'
+                ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-pink-400 transition dark:bg-neutral-800'
                 : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
             "
           >
@@ -161,7 +161,7 @@
             >
               <span
                 class="material-symbols-outlined text-neutral-500 dark:text-neutral-400"
-                [class.text-teal-500]="form.get('icon')?.value === icon.name"
+                [class.text-pink-400]="form.get('icon')?.value === icon.name"
               >
                 {{ icon.name }}
               </span>
@@ -188,7 +188,7 @@
         (click)="form.controls.displayOrder.setValue(position)"
         [class]="
           form.controls.displayOrder.value === position
-            ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-teal-500 transition dark:bg-[#313131]'
+            ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-pink-400 transition dark:bg-[#313131]'
             : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
         "
       >
@@ -212,7 +212,7 @@
 
       <button
         type="submit"
-        class="rounded-full bg-teal-500 px-8 py-3 text-sm font-bold text-black transition hover:bg-teal-400 cursor-pointer"
+        class="rounded-full bg-pink-400 px-8 py-3 text-sm font-bold text-black transition hover:bg-pink-400 cursor-pointer"
       >
         {{ subject() ? 'Update Subject' : 'Create Subject' }}
       </button>

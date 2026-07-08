@@ -1,0 +1,13 @@
+@if (tags().length) {
+  <div class="flex flex-col gap-2">
+    @for (tag of tags(); track tag.id) {
+      <app-tag-card
+        [tag]="tag"
+        (edit)="edit.emit($event)"
+        (delete)="delete.emit($event)"
+      ></app-tag-card>
+    }
+  </div>
+} @else {
+  <p class="text-neutral-500 dark:text-neutral-400">No tags found.</p>
+}

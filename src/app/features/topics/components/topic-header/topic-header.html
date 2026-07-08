@@ -1,0 +1,58 @@
+<div
+  class="flex flex-col gap-3 rounded-3xl bg-neutral-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:bg-neutral-800"
+>
+  <div>
+    <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-200">
+      Topics
+    </h1>
+    <p class="mt-1 text-sm text-neutral-500">Manage chapter topics.</p>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3">
+    <input
+      [(ngModel)]="query"
+      (ngModelChange)="search.emit($event)"
+      type="text"
+      placeholder="Search Topics..."
+      class="w-64 rounded-full bg-neutral-100 px-4 py-2 text-md text-neutral-900 placeholder:text-neutral-400 outline-none transition-all dark:bg-[#313131] dark:text-neutral-200 dark:placeholder-neutral-500"
+    />
+
+    <div
+      class="flex items-center gap-1 rounded-full bg-neutral-100 p-1 text-sm dark:bg-[#313131]"
+    >
+      <button
+        type="button"
+        (click)="setSort('asc')"
+        [class]="
+          sortDirection === 'asc'
+            ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-pink-400 transition dark:bg-neutral-800'
+            : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
+        "
+      >
+        Asc
+      </button>
+
+      <span class="text-neutral-300 dark:text-neutral-600">•</span>
+
+      <button
+        type="button"
+        (click)="setSort('desc')"
+        [class]="
+          sortDirection === 'desc'
+            ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-pink-400 transition dark:bg-neutral-800'
+            : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
+        "
+      >
+        Desc
+      </button>
+    </div>
+
+    <button
+      type="button"
+      (click)="create.emit()"
+      class="rounded-full bg-pink-400 px-5 py-2 text-sm font-bold text-black transition hover:bg-pink-400 cursor-pointer"
+    >
+      + Add Topic
+    </button>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+@if (isCreating() || isEditing()) {
+
+<app-lesson-form
+  [lesson]="selectedLesson()"
+  [topics]="topics()"
+  [positions]="isEditing() ? editPositions() : createPositions()"
+  (save)="onSave($event)"
+  (cancel)="onCancel()"
+/>
+
+} @else {
+
+<div class="space-y-6">
+  <app-lesson-header
+    (create)="onCreate()"
+    (search)="onSearch($event)"
+    (sort)="onSort($event)"
+  />
+
+  @if (loading()) {
+
+  <p class="text-neutral-500">Loading...</p>
+
+  } @else {
+
+  <app-lesson-list
+    [lessons]="sortedLessons()"
+    [topics]="topics()"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+    (lessonTags)="onLessonTags($event)"
+  />
+
+  }
+</div>
+
+}

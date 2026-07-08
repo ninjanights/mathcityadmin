@@ -1,0 +1,168 @@
+<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
+  <div class="mb-10">
+    <button
+      type="button"
+      (click)="cancel.emit()"
+      class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-300"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+
+      Back to Topics
+    </button>
+
+    <div>
+      <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+        {{ topic() ? 'Edit Topic' : 'Create Topic' }}
+      </h1>
+
+      <p class="mt-2 text-sm text-neutral-500">
+        {{ topic() ? 'Update this topic.' : 'Create a topic under a chapter.' }}
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="max-w-5xl space-y-6">
+    <div>
+      <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Chapter
+      </label>
+
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          (click)="previousChapters()"
+          [disabled]="startIndex() === 0"
+          class="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 transition hover:bg-neutral-300 hover:text-neutral-900 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#313131] dark:hover:bg-neutral-700 dark:hover:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+
+        <div class="flex flex-1 justify-center gap-2">
+          @for (chapter of visibleChapters(); track chapter.id) {
+            <button
+              type="button"
+              (click)="selectChapter(chapter)"
+              [class]="
+                selectedChapterId() === chapter.id
+                  ? 'rounded-full bg-pink-400 px-5 py-2 text-sm font-semibold text-black transition'
+                  : 'rounded-full bg-neutral-100 px-5 py-2 text-sm font-medium text-neutral-500 transition hover:bg-neutral-300 hover:text-neutral-900 dark:bg-[#313131] dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-white'
+              "
+            >
+              {{ chapter.title }}
+            </button>
+          }
+        </div>
+
+        <button
+          type="button"
+          (click)="nextChapters()"
+          [disabled]="startIndex() + visibleCount >= chapters().length"
+          class="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 transition hover:bg-neutral-300 hover:text-neutral-900 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#313131] dark:hover:bg-neutral-700 dark:hover:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      </div>
+
+      @if (selectedChapter()) {
+        <p class="mt-3 text-xs text-neutral-500">
+          Topic will belong to
+          <span class="font-medium">
+            {{ selectedChapter()?.title }}
+          </span>.
+        </p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Title
+      </label>
+
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Introduction"
+        class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none transition dark:bg-[#313131] dark:text-neutral-100 dark:placeholder:text-neutral-500"
+      />
+    </div>
+
+    <div>
+      <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        Display Order
+      </label>
+
+      <div class="flex flex-wrap gap-2">
+        @for (position of positions(); track position) {
+          <button
+            type="button"
+            (click)="form.controls.displayOrder.setValue(position)"
+            [class]="
+              form.controls.displayOrder.value === position
+                ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-pink-400 transition dark:bg-[#313131]'
+                : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
+            "
+          >
+            {{ position }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-4 pt-8">
+      <button
+        type="button"
+        (click)="cancel.emit()"
+        class="rounded-full px-6 py-3 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 cursor-pointer dark:text-neutral-400 dark:hover:bg-[#313131] dark:hover:text-white"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="rounded-full bg-pink-400 px-8 py-3 text-sm font-bold text-black transition hover:bg-pink-400 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+      >
+        {{ topic() ? 'Update Topic' : 'Create Topic' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,38 @@
+<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
+  <div class="mb-5 flex justify-between">
+    <h2 class="text-xl font-semibold">Lesson Tags</h2>
+
+    <button (click)="close.emit()" class="text-neutral-500">Close</button>
+  </div>
+
+  <h3 class="mb-3 text-sm text-neutral-500">Attached Tags</h3>
+
+  <div class="mb-6 flex flex-wrap gap-3">
+    @for (tag of lessonTags(); track tag.tagId) {
+      <div
+        class="flex items-center gap-2 rounded-full bg-cyan-500/10 px-3 py-1 text-sm text-cyan-500"
+      >
+        {{ tag.tagName }}
+
+        <button (click)="removeTag(tag.tagId)" class="text-red-500">×</button>
+      </div>
+    }
+
+    @if (lessonTags().length === 0) {
+      <span class="text-sm text-neutral-500"> No tags attached </span>
+    }
+  </div>
+
+  <h3 class="mb-3 text-sm text-neutral-500">Add Tags</h3>
+
+  <div class="flex flex-wrap gap-2">
+    @for (tag of availableTags(); track tag.id) {
+      <button
+        (click)="addTag(tag.id)"
+        class="rounded-full bg-neutral-300 px-3 py-1 text-sm hover:bg-cyan-500 hover:text-white dark:bg-neutral-700"
+      >
+        {{ tag.name }}
+      </button>
+    }
+  </div>
+</div>

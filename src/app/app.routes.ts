@@ -53,6 +53,13 @@ export const routes: Routes = [
         loadChildren: () => import('./features/lessons/lessons.routes').then((m) => m.lessonsRoutes),
       },
       {
+        path: 'lesson-resources',
+        loadChildren: () =>
+          import('./features/lesson-resources/lesson-resources.routes').then(
+            (m) => m.lessonResourcesRoutes,
+          ),
+      },
+      {
         path: 'tags',
         loadChildren: () => import('./features/tags/tags.routes').then((m) => m.tagsRoutes),
       },

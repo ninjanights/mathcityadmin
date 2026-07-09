@@ -1,6 +1,7 @@
 export interface LessonListResponse {
   id: string;
   title: string;
+  topicTitle: String;
   slug: string;
   difficulty: number;
   readingTimeMinutes: number;
@@ -8,13 +9,13 @@ export interface LessonListResponse {
   displayOrder: number;
   isPublished: boolean;
   topicId: string;
-
 }
 
 export interface LessonResponse {
   id: string;
   topicId: string;
   title: string;
+
   slug: string;
   summary: string;
   markdownContent: string;

@@ -9,6 +9,24 @@
   (cancel)="onCancel()"
 />
 
+} @else if (isManagingTags() && selectedLessonForTags()) {
+<app-lesson-tag-page
+  [lessonId]="selectedLessonForTags()!.id"
+  [lessonTitle]="selectedLessonForTags()!.title"
+  (close)="onCancel()"
+/>
+} @else if (isManagingResources() && selectedLessonForResources()) {
+<app-lesson-resource-page
+  [lessonId]="selectedLessonForResources()!.id"
+  [lessonTitle]="selectedLessonForResources()!.title"
+  (close)="onCancel()"
+/>
+} @else if (isManagingQuestions() && selectedLessonForQuestions()) {
+<app-practice-question-page
+  [lessonId]="selectedLessonForQuestions()!.id"
+  [lessonTitle]="selectedLessonForQuestions()!.title"
+  (close)="onCancel()"
+/>
 } @else {
 
 <div class="space-y-6">
@@ -20,7 +38,9 @@
 
   @if (loading()) {
 
-  <p class="text-neutral-500">Loading...</p>
+  <div class="flex items-center justify-center py-12">
+    <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">Loading Lessons...</p>
+  </div>
 
   } @else {
 
@@ -30,6 +50,8 @@
     (edit)="onEdit($event)"
     (delete)="onDelete($event)"
     (lessonTags)="onLessonTags($event)"
+    (lessonResources)="onLessonResources($event)"
+    (practiceQuestions)="onPracticeQuestions($event)"
   />
 
   }

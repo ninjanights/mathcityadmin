@@ -17,9 +17,9 @@ export class LessonCard {
 
   lessonTags = output<LessonListResponse>();
 
-lessonResources = output<LessonListResponse>();
+  lessonResources = output<LessonListResponse>();
 
-practiceQuestions = output<LessonListResponse>();
+  practiceQuestions = output<LessonListResponse>();
 
   difficultyLabel(level: number): string {
     switch (level) {

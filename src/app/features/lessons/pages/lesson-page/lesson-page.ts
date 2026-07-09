@@ -12,6 +12,9 @@ import { TopicService } from '../../../topics/services';
 import { TopicListResponse } from '../../../topics/models';
 
 import { LessonForm, LessonHeader, LessonList } from '../../components';
+import { LessonTagPage } from '../../../lesson-tags/pages/lesson-tag-page/lesson-tag-page';
+import { LessonResourcePage } from '../../../lesson-resources/pages/lesson-resource-page/lesson-resource-page';
+import { PracticeQuestionPage } from '../../../practice-questions/pages/practice-question-page/practice-question-page';
 
 @Component({
   selector: 'app-lesson-page',
@@ -21,6 +24,9 @@ import { LessonForm, LessonHeader, LessonList } from '../../components';
     LessonHeader,
     LessonList,
     LessonForm,
+    LessonTagPage,
+    LessonResourcePage,
+    PracticeQuestionPage
   ],
   templateUrl: './lesson-page.html',
 })
@@ -34,6 +40,12 @@ export class LessonPage implements OnInit {
 
   selectedLessonForTags = signal<LessonResponse | undefined>(undefined);
   isManagingTags = signal(false);
+
+  selectedLessonForResources = signal<LessonResponse | undefined>(undefined);
+  isManagingResources = signal(false);
+
+  selectedLessonForQuestions = signal<LessonResponse | undefined>(undefined);
+  isManagingQuestions = signal(false);
 
   sortOrder = signal('title-asc');
   isCreating = signal(false);
@@ -82,9 +94,39 @@ export class LessonPage implements OnInit {
     next: (response) => {
       this.selectedLessonForTags.set(response.data);
       this.isManagingTags.set(true);
+      this.isManagingResources.set(false);
+      this.isManagingQuestions.set(false);
+      this.isCreating.set(false);
+      this.isEditing.set(false);
     }
   });
 }
+
+  onLessonResources(lesson: LessonListResponse): void {
+    this.lessonService.getLessonById(lesson.id).subscribe({
+      next: (response) => {
+        this.selectedLessonForResources.set(response.data);
+        this.isManagingResources.set(true);
+        this.isManagingTags.set(false);
+        this.isManagingQuestions.set(false);
+        this.isCreating.set(false);
+        this.isEditing.set(false);
+      }
+    });
+  }
+
+  onPracticeQuestions(lesson: LessonListResponse): void {
+    this.lessonService.getLessonById(lesson.id).subscribe({
+      next: (response) => {
+        this.selectedLessonForQuestions.set(response.data);
+        this.isManagingQuestions.set(true);
+        this.isManagingTags.set(false);
+        this.isManagingResources.set(false);
+        this.isCreating.set(false);
+        this.isEditing.set(false);
+      }
+    });
+  }
 
   loadLessons(search?: string): void {
     this.loading.set(true);
@@ -112,6 +154,9 @@ export class LessonPage implements OnInit {
     this.selectedLesson.set(undefined);
     this.isCreating.set(true);
     this.isEditing.set(false);
+    this.isManagingTags.set(false);
+    this.isManagingResources.set(false);
+    this.isManagingQuestions.set(false);
   }
 
   onEdit(lesson: LessonListResponse): void {
@@ -120,6 +165,9 @@ export class LessonPage implements OnInit {
         this.selectedLesson.set(response.data);
         this.isEditing.set(true);
         this.isCreating.set(false);
+        this.isManagingTags.set(false);
+        this.isManagingResources.set(false);
+        this.isManagingQuestions.set(false);
       },
     });
   }
@@ -183,7 +231,13 @@ export class LessonPage implements OnInit {
   onCancel(): void {
     this.isCreating.set(false);
     this.isEditing.set(false);
+    this.isManagingTags.set(false);
+    this.isManagingResources.set(false);
+    this.isManagingQuestions.set(false);
     this.saving.set(false);
     this.selectedLesson.set(undefined);
+    this.selectedLessonForTags.set(undefined);
+    this.selectedLessonForResources.set(undefined);
+    this.selectedLessonForQuestions.set(undefined);
   }
 }

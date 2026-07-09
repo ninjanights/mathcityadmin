@@ -50,13 +50,20 @@ export const Endpoints = {
     delete: (id: string) => `/api/lessons/${id}`,
 
     move: (id: string) => `/api/lessons/${id}/move`,
-
     resources: (lessonId: string) => `/api/lessons/${lessonId}/resources`,
-
     practiceQuestions: (lessonId: string) => `/api/lessons/${lessonId}/practicequestions`,
 
     tags: (lessonId: string) => `/api/lessons/${lessonId}/tags`,
     addTag: (lessonId: string) => `/api/lessons/${lessonId}/tags`,
     removeTag: (lessonId: string, tagId: string) => `/api/lessons/${lessonId}/tags/${tagId}`,
+  },
+
+  lessonResources: {
+    list: '/api/lessonresources',
+    create: '/api/lessonresources',
+    getById: (id: string) => `/api/lessonresources/${id}`,
+    update: (id: string) => `/api/lessonresources/${id}`,
+    delete: (id: string) => `/api/lessonresources/${id}`,
+    move: (id: string) => `/api/lessonresources/${id}/move`,
   },
 };

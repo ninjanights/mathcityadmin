@@ -1,0 +1,46 @@
+<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
+  <div class="mb-8 flex items-start justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Practice Questions</h2>
+      @if (lessonTitle) {
+        <p class="mt-1 text-sm text-neutral-500">{{ lessonTitle }}</p>
+      }
+    </div>
+
+    <button
+      type="button"
+      (click)="close.emit()"
+      class="rounded-full px-4 py-2 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-white"
+    >
+      Close
+    </button>
+  </div>
+
+  <div class="rounded-2xl bg-neutral-100 p-4 dark:bg-[#313131]">
+    @if (loading()) {
+      <p class="text-sm text-neutral-500">Loading...</p>
+    } @else if (questions().length) {
+      <div class="flex flex-col gap-2">
+        @for (question of questions(); track $index) {
+          <div class="rounded-2xl bg-neutral-200 px-4 py-3 dark:bg-neutral-800">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <h3 class="font-semibold text-neutral-900 dark:text-neutral-100">
+                  {{ $any(question).questionText || $any(question).title || 'Practice question' }}
+                </h3>
+                <p class="mt-1 text-xs text-neutral-500">
+                  {{ $any(question).difficulty || $any(question).questionType || 'Attached question' }}
+                </p>
+              </div>
+              @if ($any(question).displayOrder) {
+                <span class="font-mono text-xs text-neutral-400">#{{ $any(question).displayOrder }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="text-sm text-neutral-500">No practice questions attached.</p>
+    }
+  </div>
+</div>

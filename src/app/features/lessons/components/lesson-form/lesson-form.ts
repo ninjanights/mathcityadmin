@@ -93,7 +93,7 @@ export class LessonForm implements OnChanges, OnDestroy {
 
     markdownContent: ['', Validators.required],
 
-    difficulty: [0, Validators.required],
+    difficulty: [1, Validators.required],
 
     readingTimeMinutes: [5, [Validators.required, Validators.min(1)]],
 
@@ -136,7 +136,7 @@ export class LessonForm implements OnChanges, OnDestroy {
         title: '',
         summary: '',
         markdownContent: '',
-        difficulty: 0,
+        difficulty: 1,
         readingTimeMinutes: 5,
         isPublished: true,
         displayOrder: this.positions().length + 1,

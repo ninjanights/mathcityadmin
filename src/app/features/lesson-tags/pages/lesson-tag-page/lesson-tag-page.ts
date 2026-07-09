@@ -1,4 +1,4 @@
-import { Component, inject, input, output, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, output, OnInit, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { LessonTagService } from '../../services';
@@ -18,9 +18,16 @@ export class LessonTagPage implements OnInit {
   private lessonTagService = inject(LessonTagService);
   private tagService = inject(TagService);
   lessonId = input.required<string>();
+  lessonTitle = input('');
   close = output<void>();
   lessonTags = signal<LessonTagResponse[]>([]);
   availableTags = signal<TagListResponse[]>([]);
+  selectedTagId = signal('');
+  attachedTagIds = computed(() => new Set(this.lessonTags().map((tag) => tag.tagId)));
+  selectableTags = computed(() =>
+    this.availableTags().filter((tag) => !this.attachedTagIds().has(tag.id)),
+  );
+
   ngOnInit(): void {
     this.loadLessonTags();
     this.loadTags();
@@ -42,6 +49,20 @@ export class LessonTagPage implements OnInit {
     });
   }
 
+  selectTag(tagId: string) {
+    this.selectedTagId.set(tagId);
+  }
+
+  addSelectedTag() {
+    const tagId = this.selectedTagId();
+
+    if (!tagId) {
+      return;
+    }
+
+    this.addTag(tagId);
+  }
+
   addTag(tagId: string) {
     const request: CreateLessonTagRequest = {
       tagId,
@@ -49,6 +70,7 @@ export class LessonTagPage implements OnInit {
 
     this.lessonTagService.addLessonTag(this.lessonId(), request).subscribe({
       next: () => {
+        this.selectedTagId.set('');
         this.loadLessonTags();
       },
     });

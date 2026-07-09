@@ -1,100 +1,101 @@
-<div
-  class="cursor-pointer rounded-3xl bg-neutral-200 px-4 py-3 transition-colors duration-200 dark:bg-neutral-800"
->
+<div class="cursor-pointer rounded-3xl bg-neutral-200 px-4 py-3 transition-colors duration-200 dark:bg-neutral-800">
   <div class="flex items-center justify-between">
-    <div class="space-y-1">
-      <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined shrink-0 text-xl text-pink-400"> school </span>
 
-        <div class="flex flex-wrap items-center gap-3">
+    <!-- Left -->
+    <div class="space-y-1">
+
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+
+        <!-- Icon -->
+        <span class="material-symbols-outlined shrink-0 text-xl text-pink-400">
+          school
+        </span>
+
+        <div class="flex items-baseline gap-3 flex-wrap">
+
+          <!-- Title -->
           <h3 class="font-semibold text-neutral-900 dark:text-neutral-100">
             {{ lesson().title }}
           </h3>
 
+          <!-- Slug -->
           <span class="font-mono text-xs text-neutral-400 dark:text-neutral-500">
+            /{{ lesson().slug }}
+          </span>
+
+          <span class="text-neutral-300 dark:text-neutral-700">•</span>
+
+          <!-- Display Order -->
+          <span class="font-mono text-xs text-neutral-400">
             #{{ lesson().displayOrder }}
           </span>
 
           <span class="text-neutral-300 dark:text-neutral-700">•</span>
 
+          <!-- Topic -->
           <span class="text-xs text-neutral-500">
-            {{ topicTitle() }}
+           {{ lesson().topicTitle }}
           </span>
 
           <span class="text-neutral-300 dark:text-neutral-700">•</span>
 
-          <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-[#313131]">
-            {{ difficultyLabel(lesson().difficulty) }}
+          <!-- Status -->
+          <span
+            class="text-xs"
+            [class.text-pink-400]="lesson().isPublished"
+            [class.text-neutral-400]="!lesson().isPublished"
+          >
+            {{ lesson().isPublished ? 'Live' : 'Draft' }}
           </span>
 
-          <span class="text-neutral-300 dark:text-neutral-700">•</span>
-
-          <span class="text-xs text-neutral-500"> {{ lesson().readingTimeMinutes }} min </span>
-
-          <span class="text-neutral-300 dark:text-neutral-700">•</span>
-
-          @if (lesson().isPublished) {
-            <span class="rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-500">
-              Published
-            </span>
-          } @else {
-            <span class="rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
-              Draft
-            </span>
-          }
         </div>
       </div>
 
-      @if (lesson().slug) {
-        <p class="max-w-xl text-xs leading-5 text-neutral-500">
-          {{ lesson().slug }}
-        </p>
-      }
+      <!-- Bottom Info -->
+      <div class="ml-9 flex items-center gap-5 text-xs text-neutral-500">
+
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">workspace_premium</span>
+          {{ difficultyLabel(lesson().difficulty) }}
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">schedule</span>
+          {{ lesson().readingTimeMinutes }} min read
+        </div>
+
+      </div>
+
     </div>
 
+    <!-- Right -->
     <div class="flex items-center gap-5">
-  <button
-    type="button"
-    (click)="lessonTags.emit(lesson())"
-    class="text-sm text-cyan-500 transition hover:text-cyan-400"
-  >
-    Tags
-  </button>
 
-  <button
-    type="button"
-    (click)="lessonResources.emit(lesson())"
-    class="text-sm text-blue-500 transition hover:text-blue-400"
-  >
-    Resources
-  </button>
+      <button
+        type="button"
+        (click)="lessonTags.emit(lesson())"
+        class="text-sm text-neutral-500 transition hover:text-cyan-500 dark:text-neutral-400"
+      >
+        Tags
+      </button>
 
-  <button
-    type="button"
-    (click)="practiceQuestions.emit(lesson())"
-    class="text-sm text-purple-500 transition hover:text-purple-400"
-  >
-    Questions
-  </button>
+      <button
+        type="button"
+        (click)="lessonResources.emit(lesson())"
+        class="text-sm text-neutral-500 transition hover:text-blue-500 dark:text-neutral-400"
+      >
+        Resources
+      </button>
 
-  <button
-    type="button"
-    (click)="edit.emit(lesson())"
-    class="text-sm text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
-  >
-    Edit
-  </button>
+      <button
+        type="button"
+        (click)="practiceQuestions.emit(lesson())"
+        class="text-sm text-neutral-500 transition hover:text-purple-500 dark:text-neutral-400"
+      >
+        Questions
+      </button>
 
-  <button
-    type="button"
-    (click)="delete.emit(lesson())"
-    class="text-sm text-red-500 transition hover:text-red-400"
-  >
-    Delete
-  </button>
-</div>
-
-    <div class="flex items-center gap-5">
       <button
         type="button"
         (click)="edit.emit(lesson())"
@@ -110,6 +111,8 @@
       >
         Delete
       </button>
+
     </div>
+
   </div>
 </div>

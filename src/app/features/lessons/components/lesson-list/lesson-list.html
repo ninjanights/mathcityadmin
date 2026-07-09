@@ -6,6 +6,9 @@
         [topicTitle]="topicTitle(lesson.topicId)"
         (edit)="edit.emit($event)"
         (delete)="delete.emit($event)"
+        (lessonTags)="lessonTags.emit($event)"
+        (lessonResources)="lessonResources.emit($event)"
+        (practiceQuestions)="practiceQuestions.emit($event)"
       >
       </app-lesson-card>
     }

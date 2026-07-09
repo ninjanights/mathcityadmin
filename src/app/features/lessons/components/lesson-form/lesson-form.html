@@ -289,9 +289,9 @@
         <div class="flex flex-wrap gap-2">
           <button
             type="button"
-            (click)="selectDifficulty(0)"
+            (click)="selectDifficulty(1)"
             [class]="
-              form.controls.difficulty.value === 0
+              form.controls.difficulty.value === 1
                 ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-pink-400 transition dark:bg-[#313131]'
                 : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
             "
@@ -300,9 +300,9 @@
           </button>
           <button
             type="button"
-            (click)="selectDifficulty(1)"
+            (click)="selectDifficulty(2)"
             [class]="
-              form.controls.difficulty.value === 1
+              form.controls.difficulty.value === 2
                 ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-pink-400 transition dark:bg-[#313131]'
                 : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
             "
@@ -311,9 +311,9 @@
           </button>
           <button
             type="button"
-            (click)="selectDifficulty(2)"
+            (click)="selectDifficulty(3)"
             [class]="
-              form.controls.difficulty.value === 2
+              form.controls.difficulty.value === 3
                 ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-pink-400 transition dark:bg-[#313131]'
                 : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
             "

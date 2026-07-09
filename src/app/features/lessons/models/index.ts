@@ -33,20 +33,15 @@ export interface CreateLessonRequest {
   markdownContent: string;
   difficulty: number;
   readingTimeMinutes: number;
-  thumbnailUrl: string;
   displayOrder: number;
   isPublished: boolean;
 }
 
-export interface UpdateLessonRequest {
-  title: string;
-  summary: string;
-  markdownContent: string;
-  difficulty: number;
-  readingTimeMinutes: number;
-  thumbnailUrl: string;
-  displayOrder: number;
-  isPublished: boolean;
+export interface UpdateLessonRequest extends CreateLessonRequest {}
+
+export interface LessonSaveRequest {
+  request: CreateLessonRequest;
+  thumbnail?: File;
 }
 
 export interface MoveLessonRequest {

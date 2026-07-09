@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { LessonService } from '../../services';
 import {
-  CreateLessonRequest,
+  LessonSaveRequest,
   LessonListResponse,
   LessonResponse,
 } from '../../models';
@@ -38,6 +38,7 @@ export class LessonPage implements OnInit {
   sortOrder = signal('title-asc');
   isCreating = signal(false);
   isEditing = signal(false);
+  saving = signal(false);
   selectedLesson = signal<LessonResponse | undefined>(undefined);
   sortedLessons = computed(() => {
     const order = this.sortOrder();
@@ -133,35 +134,48 @@ export class LessonPage implements OnInit {
     }
   }
 
-  onSave(request: CreateLessonRequest): void {
+  onSave(payload: LessonSaveRequest): void {
+    const { request, thumbnail } = payload;
+
+    this.saving.set(true);
+
     if (this.isEditing() && this.selectedLesson()) {
       const id = this.selectedLesson()!.id;
 
       const updateRequest = {
+        topicId: request.topicId,
         title: request.title,
         summary: request.summary,
         markdownContent: request.markdownContent,
         difficulty: request.difficulty,
         readingTimeMinutes: request.readingTimeMinutes,
-        thumbnailUrl: request.thumbnailUrl,
         displayOrder: request.displayOrder,
         isPublished: request.isPublished,
       };
 
-      this.lessonService.updateLesson(id, updateRequest).subscribe({
+      this.lessonService.updateLesson(id, updateRequest, thumbnail).subscribe({
         next: () => {
           this.onCancel();
           this.loadLessons();
+        },
+        error: () => {
+          this.saving.set(false);
+          alert('Upload failed');
         },
       });
 
       return;
     }
 
-    this.lessonService.createLesson(request).subscribe({
+    this.lessonService.createLesson(request, thumbnail).subscribe({
       next: () => {
+        alert('Lesson created successfully');
         this.onCancel();
         this.loadLessons();
+      },
+      error: () => {
+        this.saving.set(false);
+        alert('Upload failed');
       },
     });
   }
@@ -169,6 +183,7 @@ export class LessonPage implements OnInit {
   onCancel(): void {
     this.isCreating.set(false);
     this.isEditing.set(false);
+    this.saving.set(false);
     this.selectedLesson.set(undefined);
   }
 }

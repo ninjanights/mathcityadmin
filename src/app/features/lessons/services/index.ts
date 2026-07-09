@@ -70,12 +70,25 @@ export class LessonService {
     return this.apiService.get<ApiResponse<LessonResponse>>(Endpoints.lessons.getById(id));
   }
 
-  createLesson(request: CreateLessonRequest): Observable<ApiResponse<LessonResponse>> {
-    return this.apiService.post<ApiResponse<LessonResponse>>(Endpoints.lessons.create, request);
+  createLesson(
+    request: CreateLessonRequest,
+    thumbnail?: File,
+  ): Observable<ApiResponse<LessonResponse>> {
+    return this.apiService.post<ApiResponse<LessonResponse>>(
+      Endpoints.lessons.create,
+      this.toLessonFormData(request, thumbnail),
+    );
   }
 
-  updateLesson(id: string, request: UpdateLessonRequest): Observable<ApiResponse<LessonResponse>> {
-    return this.apiService.put<ApiResponse<LessonResponse>>(Endpoints.lessons.update(id), request);
+  updateLesson(
+    id: string,
+    request: UpdateLessonRequest,
+    thumbnail?: File,
+  ): Observable<ApiResponse<LessonResponse>> {
+    return this.apiService.put<ApiResponse<LessonResponse>>(
+      Endpoints.lessons.update(id),
+      this.toLessonFormData(request, thumbnail),
+    );
   }
 
   moveLesson(id: string, request: MoveLessonRequest): Observable<void> {
@@ -104,5 +117,27 @@ export class LessonService {
 
   removeTagFromLesson(lessonId: string, tagId: string): Observable<void> {
     return this.apiService.delete<void>(Endpoints.lessons.removeTag(lessonId, tagId));
+  }
+
+  private toLessonFormData(
+    request: CreateLessonRequest | UpdateLessonRequest,
+    thumbnail?: File,
+  ): FormData {
+    const formData = new FormData();
+
+    formData.append('topicId', request.topicId);
+    formData.append('title', request.title);
+    formData.append('summary', request.summary);
+    formData.append('markdownContent', request.markdownContent);
+    formData.append('difficulty', request.difficulty.toString());
+    formData.append('readingTimeMinutes', request.readingTimeMinutes.toString());
+    formData.append('displayOrder', request.displayOrder.toString());
+    formData.append('isPublished', request.isPublished.toString());
+
+    if (thumbnail) {
+      formData.append('thumbnail', thumbnail);
+    }
+
+    return formData;
   }
 }

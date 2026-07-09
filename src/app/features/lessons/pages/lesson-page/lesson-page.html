@@ -4,6 +4,7 @@
   [lesson]="selectedLesson()"
   [topics]="topics()"
   [positions]="isEditing() ? editPositions() : createPositions()"
+  [saving]="saving()"
   (save)="onSave($event)"
   (cancel)="onCancel()"
 />

@@ -23,11 +23,11 @@ export class LessonCard {
 
   difficultyLabel(level: number): string {
     switch (level) {
-      case 0:
-        return 'Beginner';
       case 1:
-        return 'Intermediate';
+        return 'Beginner';
       case 2:
+        return 'Intermediate';
+      case 3:
         return 'Advanced';
       default:
         return 'Unknown';

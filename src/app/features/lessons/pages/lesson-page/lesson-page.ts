@@ -133,6 +133,7 @@ export class LessonPage implements OnInit {
 
     this.lessonService.getLessons({ search }).subscribe({
       next: (response) => {
+        console.log(response.data.items);
         this.lessons.set(response.data.items);
         this.loading.set(false);
       },

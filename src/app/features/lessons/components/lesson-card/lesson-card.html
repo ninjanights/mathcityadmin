@@ -1,81 +1,79 @@
-<div class="cursor-pointer rounded-3xl bg-neutral-200 px-4 py-3 transition-colors duration-200 dark:bg-neutral-800">
-  <div class="flex items-center justify-between">
+<div
+  class="cursor-pointer rounded-3xl bg-neutral-200 px-5 py-3 transition-colors duration-200 dark:bg-neutral-800"
+>
+  <div class="flex items-start justify-between gap-6">
 
     <!-- Left -->
-    <div class="space-y-1">
+    <div class="min-w-0 flex-1">
 
-      <!-- Header -->
-      <div class="flex items-center gap-3">
+      <!-- Top Row -->
+      <div class="flex flex-wrap items-center gap-3">
 
-        <!-- Icon -->
-        <span class="material-symbols-outlined shrink-0 text-xl text-pink-400">
+        <span class="material-symbols-outlined text-pink-400">
           school
         </span>
 
-        <div class="flex items-baseline gap-3 flex-wrap">
+        <!-- Display Order -->
+        <span class="font-mono text-xs font-semibold text-neutral-500">
+          #{{ lesson().displayOrder }}
+        </span>
 
-          <!-- Title -->
-          <h3 class="font-semibold text-neutral-900 dark:text-neutral-100">
-            {{ lesson().title }}
-          </h3>
+        <span class="text-neutral-400">•</span>
 
-          <!-- Slug -->
-          <span class="font-mono text-xs text-neutral-400 dark:text-neutral-500">
-            /{{ lesson().slug }}
-          </span>
+        <!-- Lesson -->
+        <h3 class="truncate font-semibold text-neutral-900 dark:text-neutral-100">
+          {{ lesson().title }}
+        </h3>
 
-          <span class="text-neutral-300 dark:text-neutral-700">•</span>
+        <span class="text-neutral-400">•</span>
 
-          <!-- Display Order -->
-          <span class="font-mono text-xs text-neutral-400">
-            #{{ lesson().displayOrder }}
-          </span>
+        <!-- Slug -->
+        <span
+          class="font-mono text-xs text-neutral-500 dark:text-neutral-400"
+        >
+          /{{ lesson().slug }}
+        </span>
 
-          <span class="text-neutral-300 dark:text-neutral-700">•</span>
+        <span class="text-neutral-400">•</span>
 
-          <!-- Topic -->
-          <span class="text-xs text-neutral-500">
-           {{ lesson().topicTitle }}
-          </span>
+        <!-- Topic -->
+        <span class="text-sm text-neutral-500 dark:text-neutral-400">
+          {{ lesson().topicTitle }}
+        </span>
 
-          <span class="text-neutral-300 dark:text-neutral-700">•</span>
+        <span class="text-neutral-400">•</span>
 
-          <!-- Status -->
-          <span
-            class="text-xs"
-            [class.text-pink-400]="lesson().isPublished"
-            [class.text-neutral-400]="!lesson().isPublished"
-          >
-            {{ lesson().isPublished ? 'Live' : 'Draft' }}
-          </span>
+        <!-- Status -->
+        <span
+          class="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+          [class.bg-green-500/10]="lesson().isPublished"
+          [class.text-green-500]="lesson().isPublished"
+          [class.bg-neutral-500/10]="!lesson().isPublished"
+          [class.text-neutral-500]="!lesson().isPublished"
+        >
+          {{ lesson().isPublished ? 'Live' : 'Draft' }}
+        </span>
 
-        </div>
       </div>
 
-      <!-- Bottom Info -->
-      <div class="ml-9 flex items-center gap-5 text-xs text-neutral-500">
+      <!-- Bottom Row -->
+      <div
+        class="ml-9 mt-2 flex items-center gap-6 text-xs text-neutral-500 dark:text-neutral-400"
+      >
+        <span>{{ difficultyLabel(lesson().difficulty) }}</span>
 
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-base">workspace_premium</span>
-          {{ difficultyLabel(lesson().difficulty) }}
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-base">schedule</span>
-          {{ lesson().readingTimeMinutes }} min read
-        </div>
-
+        <span>{{ lesson().readingTimeMinutes }} Minutes</span>
       </div>
 
     </div>
 
     <!-- Right -->
-    <div class="flex items-center gap-5">
+    <div class="flex items-center gap-2">
 
       <button
         type="button"
         (click)="lessonTags.emit(lesson())"
-        class="text-sm text-neutral-500 transition hover:text-cyan-500 dark:text-neutral-400"
+        class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-400 transition hover:bg-neutral-500"
       >
         Tags
       </button>
@@ -83,7 +81,7 @@
       <button
         type="button"
         (click)="lessonResources.emit(lesson())"
-        class="text-sm text-neutral-500 transition hover:text-blue-500 dark:text-neutral-400"
+        class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-400 transition hover:bg-neutral-500"
       >
         Resources
       </button>
@@ -91,7 +89,7 @@
       <button
         type="button"
         (click)="practiceQuestions.emit(lesson())"
-        class="text-sm text-neutral-500 transition hover:text-purple-500 dark:text-neutral-400"
+        class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-400 transition hover:bg-neutral-500"
       >
         Questions
       </button>

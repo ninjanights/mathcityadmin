@@ -1,8 +1,8 @@
 export enum ResourceType {
-  Image = 0,
-  Pdf = 1,
+  Image = 1,
+  Pdf = 3,
   Video = 2,
-  Zip = 3,
+  Zip = 5,
 }
 
 export interface LessonResourceListResponse {

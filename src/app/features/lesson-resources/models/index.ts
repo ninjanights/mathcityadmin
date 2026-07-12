@@ -9,6 +9,7 @@ export interface LessonResourceListResponse {
   id: string;
   title: string;
   resourceType: ResourceType;
+    description : String;
   displayOrder: number;
 }
 
@@ -17,10 +18,12 @@ export interface CreateLessonResourceRequest {
   title: string;
   resourceType: ResourceType;
   displayOrder: number;
+  description : String;
 }
 
 export interface UpdateLessonResourceRequest {
   title: string;
   resourceType: ResourceType;
   displayOrder: number;
+    description : String;
 }

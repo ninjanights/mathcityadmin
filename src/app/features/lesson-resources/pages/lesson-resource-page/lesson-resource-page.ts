@@ -43,6 +43,7 @@ export class LessonResourcePage implements OnInit {
 
   form = this.fb.group({
     title: ['', Validators.required],
+    description: [''],
     resourceType: [ResourceType.Image, Validators.required],
     displayOrder: [1, [Validators.required, Validators.min(1)]],
   });
@@ -91,6 +92,7 @@ export class LessonResourcePage implements OnInit {
     this.resources.set([]);
     this.form.patchValue({
       title: '',
+        description: '',
       resourceType: ResourceType.Image,
       displayOrder: 1,
     });
@@ -170,6 +172,7 @@ export class LessonResourcePage implements OnInit {
           title: this.form.controls.title.value ?? '',
           resourceType: Number(this.form.controls.resourceType.value) as ResourceType,
           displayOrder: Number(this.form.controls.displayOrder.value),
+          description: this.form.controls.description.value ?? ""
         },
         file,
       )
@@ -177,6 +180,7 @@ export class LessonResourcePage implements OnInit {
         next: () => {
           this.form.patchValue({
             title: '',
+              description: '',
             resourceType: ResourceType.Image,
           });
           this.clearFile(input);

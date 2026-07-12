@@ -32,6 +32,7 @@ export class LessonResourceService {
     formData.append('title', request.title);
     formData.append('resourceType', request.resourceType.toString());
     formData.append('displayOrder', request.displayOrder.toString());
+    formData.append('description', request.description.toString())
     formData.append('file', file);
 
     return this.apiService.post<ApiResponse<LessonResourceListResponse>>(
@@ -46,6 +47,7 @@ export class LessonResourceService {
     formData.append('title', request.title);
     formData.append('resourceType', request.resourceType.toString());
     formData.append('displayOrder', request.displayOrder.toString());
+     formData.append('description', request.description.toString());
 
     return this.apiService.put<ApiResponse<LessonResourceListResponse>>(
       Endpoints.lessonResources.update(id),

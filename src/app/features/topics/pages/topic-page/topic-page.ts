@@ -7,6 +7,12 @@ import { CreateTopicRequest, TopicListResponse, TopicResponse } from '../../mode
 import { ChapterService } from '../../../chapters/services';
 import { ChapterListResponse } from '../../../chapters/models';
 
+import { TopicStore } from '../../../../shared/stores/topic.store';
+import { SubjectStore } from '../../../../shared/stores/subject.store';
+import { ChapterStore } from '../../../../shared/stores/chapter.store';
+import { SubjectService } from '../../../subjects/services';
+
+
 @Component({
   selector: 'app-topic-page',
   standalone: true,
@@ -16,11 +22,22 @@ import { ChapterListResponse } from '../../../chapters/models';
 export class TopicPage implements OnInit {
   private readonly topicService = inject(TopicService);
   private readonly chapterService = inject(ChapterService);
+  private readonly subjectService = inject(SubjectService);
+private readonly subjectStore = inject(SubjectStore);
+private readonly chapterStore = inject(ChapterStore);
+private readonly topicStore = inject(TopicStore);
 
-  topics = signal<TopicListResponse[]>([]);
-  chapters = signal<ChapterListResponse[]>([]);
+page = signal(1);
+pageSize = 5;
+
+totalCount = signal(0);
+totalPages = signal(0);
+
+search = signal('');
+topics = this.topicStore.topics;
   loading = signal(false);
-
+subjects = this.subjectStore.subjects;
+chapters = this.chapterStore.chapters;
   sortOrder = signal('title-asc');
   isCreating = signal(false);
   isEditing = signal(false);
@@ -45,10 +62,15 @@ export class TopicPage implements OnInit {
   });
 });
 
-  ngOnInit(): void {
+ngOnInit() {
+  if (this.subjectStore.subjects().length === 0) {
+    this.loadSubjects();
+  } else if (this.chapterStore.chapters().length === 0) {
     this.loadChapters();
+  } else {
     this.loadTopics();
   }
+}
 
   createPositions = computed(() =>
     Array.from({ length: this.topics().length + 1 }, (_, i) => i + 1),
@@ -59,34 +81,71 @@ export class TopicPage implements OnInit {
   loadChapters(): void {
   this.chapterService.getChapters({
     page: 1,
-    pageSize: 1000
+    pageSize: 100,
+    subjectSlug: this.subjectStore.selectedSubject()?.slug
   }).subscribe({
     next: (response) => {
-      this.chapters.set(response.data.items);
+
+      this.chapterStore.setChapters(response.data.items);
+
+      if (response.data.items.length > 0) {
+        this.chapterStore.selectedChapter.set(response.data.items[0]);
+
+        this.loadTopics();
+      }
+    }
+  });
+}
+
+
+
+  loadSubjects(): void {
+  this.subjectService.getSubjects().subscribe({
+    next: (response) => {
+      this.subjectStore.setSubjects(response.data);
+
+      if (response.data.length > 0) {
+        this.subjectStore.selectedSubject.set(response.data[0]);
+
+        this.loadChapters();
+      }
     },
   });
 }
 
   loadTopics(search?: string): void {
-    this.loading.set(true);
-    this.topicService.getTopics(search).subscribe({
-      next: (response) => {
-        console.log(response);
-        console.log(Array.isArray(response.data));
-        console.log(this.topics);
+  this.loading.set(true);
 
-        this.topics.set(response.data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
-  }
+  this.topicService.getTopics({
+    page: this.page(),
+    pageSize: this.pageSize,
+    search,
+    chapterId: this.chapterStore.selectedChapter()?.id
+  }).subscribe({
+    next: (response) => {
 
-  onSearch(query: string): void {
-    this.loadTopics(query);
-  }
+     this.topicStore.setTopics(response.data.items);
+
+if (response.data.items.length > 0) {
+  this.topicStore.selectedTopic.set(response.data.items[0]);
+}
+
+      this.totalCount.set(response.data.totalCount);
+      this.totalPages.set(response.data.totalPages);
+
+      this.loading.set(false);
+    },
+    error: () => {
+      this.loading.set(false);
+    }
+  });
+}
+
+ onSearch(query: string) {
+  this.search.set(query);
+  this.page.set(1);
+  this.loadTopics(query);
+}
 
   onSort(order: string): void {
     this.sortOrder.set(order);
@@ -107,6 +166,12 @@ export class TopicPage implements OnInit {
       },
     });
   }
+
+  onChapterChange(chapter: ChapterListResponse) {
+  this.chapterStore.selectedChapter.set(chapter);
+  this.page.set(1);
+  this.loadTopics();
+}
 
   onDelete(topic: TopicListResponse): void {
     if (confirm(`Are you sure you want to delete ${topic.title}?`)) {

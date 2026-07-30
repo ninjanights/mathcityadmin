@@ -4,6 +4,7 @@ import { CreateSubjectRequest, SubjectListResponse, SubjectResponse } from '../.
 import { SubjectForm, SubjectHeader } from '../../components';
 import { SubjectList } from '../../components/subject-list/subject-list';
 import { CommonModule } from '@angular/common';
+import { SubjectStore } from '../../../../shared/stores/subject.store';
 
 @Component({
   selector: 'app-subject-page',
@@ -14,8 +15,10 @@ import { CommonModule } from '@angular/common';
 })
 export class SubjectPage implements OnInit {
   private readonly subjectService = inject(SubjectService);
+  private readonly subjectStore = inject(SubjectStore);
 
-  subjects = signal<SubjectListResponse[]>([]);
+  subjects = this.subjectStore.subjects;
+
   loading = signal(false);
   error = signal<string | null>(null);
 
@@ -36,16 +39,24 @@ export class SubjectPage implements OnInit {
       return 0;
     });
   });
-
+  
   ngOnInit() {
-    this.loadSubjects();
+    if (this.subjectStore.subjects().length === 0) {
+      this.loadSubjects();
+    } else if (!this.subjectStore.selectedSubject()) {
+      this.subjectStore.selectedSubject.set(this.subjectStore.subjects()[0]);
+    }
   }
 
   loadSubjects(search?: string) {
     this.loading.set(true);
     this.subjectService.getSubjects(search).subscribe({
       next: (response) => {
-        this.subjects.set(response.data);
+        this.subjectStore.setSubjects(response.data);
+
+        if (response.data.length > 0 && !this.subjectStore.selectedSubject()) {
+          this.subjectStore.selectedSubject.set(response.data[0]);
+        }
         this.loading.set(false);
       },
       error: () => {

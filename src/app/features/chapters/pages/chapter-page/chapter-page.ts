@@ -5,6 +5,8 @@ import { ChapterService } from '../../services';
 import { ChapterListResponse, ChapterResponse, CreateChapterRequest } from '../../models';
 import { SubjectService } from '../../../subjects/services';
 import { SubjectListResponse } from '../../../subjects/models';
+import { SubjectStore } from '../../../../shared/stores/subject.store';
+import { ChapterStore } from '../../../../shared/stores/chapter.store';
 
 @Component({
   selector: 'app-chapter-page',
@@ -15,16 +17,18 @@ import { SubjectListResponse } from '../../../subjects/models';
 export class ChapterPage implements OnInit {
   private readonly chapterService = inject(ChapterService);
   private readonly subjectService = inject(SubjectService);
+  private readonly subjectStore = inject(SubjectStore);
+  private readonly chapterStore = inject(ChapterStore);
 
-  chapters = signal<ChapterListResponse[]>([]);
-  subjects = signal<SubjectListResponse[]>([]);
-  selectedSubject = signal<SubjectListResponse | null>(null);
+  subjects = this.subjectStore.subjects;
+  chapters = this.chapterStore.chapters;
+
   loading = signal(false);
-search = signal('');
-page = signal(1);
-pageSize = 5;
-totalCount = signal(0);
-totalPages = signal(0);
+  search = signal('');
+  page = signal(1);
+  pageSize = 5;
+  totalCount = signal(0);
+  totalPages = signal(0);
 
   sortOrder = signal('title-asc');
   isCreating = signal(false);
@@ -47,67 +51,67 @@ totalPages = signal(0);
   });
 
   ngOnInit(): void {
-    this.loadSubjects();
-  
+    if (this.subjectStore.subjects().length === 0) {
+      this.loadSubjects();
+    } else {
+      if (!this.subjectStore.selectedSubject()) {
+        this.subjectStore.selectedSubject.set(this.subjectStore.subjects()[0]);
+      }
+
+      this.loadChapters();
+    }
   }
 
-createPositions = computed(() =>
-  Array.from(
-    { length: this.chapters().length + 1 },
-    (_, i) => i + 1
-  )
-);
+  createPositions = computed(() =>
+    Array.from({ length: this.chapters().length + 1 }, (_, i) => i + 1),
+  );
 
-editPositions = computed(() =>
-  Array.from(
-    { length: this.chapters().length },
-    (_, i) => i + 1
-  )
-);
+  editPositions = computed(() => Array.from({ length: this.chapters().length }, (_, i) => i + 1));
 
-loadSubjects(): void {
-  this.subjectService.getSubjects().subscribe({
-    next: (response) => {
-      this.subjects.set(response.data);
-
-      if (response.data.length > 0) {
-
-        console.log(response);
-console.log(response.data);
-        this.selectedSubject.set(response.data[0]);  
-        this.loadChapters();                          
-      }
-    },
-  });
-}
-
-  loadChapters(search?: string): void {
-    this.loading.set(true);
-
-    this.chapterService.getChapters({
-  page: this.page(),
-  pageSize: this.pageSize,
-  search,
-  subjectSlug: this.selectedSubject()?.slug ?? undefined
-}).subscribe({
+  loadSubjects(): void {
+    this.subjectService.getSubjects().subscribe({
       next: (response) => {
-        console.log(response, "👽");
-        this.chapters.set(response.data.items);
-this.totalCount.set(response.data.totalCount);
-this.totalPages.set(response.data.totalPages);       
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
+        this.subjectStore.setSubjects(response.data);
+
+        if (response.data.length > 0) {
+          this.subjectStore.selectedSubject.set(response.data[0]);
+          this.loadChapters();
+        }
       },
     });
   }
 
-onSearch(query: string): void {
-    this.search.set(query);
-  this.page.set(1);
-  this.loadChapters(query);
+  loadChapters(search?: string): void {
+    this.loading.set(true);
+
+    this.chapterService
+      .getChapters({
+        page: this.page(),
+        pageSize: this.pageSize,
+        search,
+        subjectSlug: this.subjectStore.selectedSubject()?.slug ?? undefined,
+      })
+      .subscribe({
+        next: (response) => {this.chapterStore.setChapters(response.data.items);
+
+if (response.data.items.length === 0) {
+  this.chapterStore.selectedChapter.set(null);
 }
+this.totalCount.set(response.data.totalCount);
+this.totalPages.set(response.data.totalPages);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
+  }
+
+  onSearch(query: string): void {
+    this.search.set(query);
+    this.page.set(1);
+    this.loadChapters(query);
+  }
 
   onSort(order: string): void {
     this.sortOrder.set(order);
@@ -130,11 +134,12 @@ onSearch(query: string): void {
   }
 
   onSubjectChange(subject: SubjectListResponse) {
-  this.selectedSubject.set(subject);
-  this.page.set(1);
-   this.loadChapters(this.search());
-}
+  this.subjectStore.selectedSubject.set(subject);
 
+  this.page.set(1);
+
+  this.loadChapters(this.search());
+}
   onDelete(chapter: ChapterListResponse): void {
     if (confirm(`Are you sure you want to delete ${chapter.title}?`)) {
       this.chapterService.deleteChapter(chapter.id).subscribe({

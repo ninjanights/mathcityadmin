@@ -11,19 +11,39 @@ import {
   UpdateTopicRequest,
 } from '../models';
 
+import { PagedResult } from '../../../shared/models';
+import { TopicQuery } from '../../../shared/models';
+
 @Injectable({
   providedIn: 'root',
 })
 export class TopicService {
   private readonly apiService = inject(ApiService);
 
-  getTopics(search?: string): Observable<ApiResponse<TopicListResponse[]>> {
-    const url = search
-      ? `${Endpoints.topics.list}?search=${encodeURIComponent(search)}`
-      : Endpoints.topics.list;
+ getTopics(
+  query: TopicQuery
+): Observable<ApiResponse<PagedResult<TopicListResponse>>> {
 
-    return this.apiService.get<ApiResponse<TopicListResponse[]>>(url);
-  }
+  const params = new URLSearchParams();
+
+  if (query.page)
+    params.append('page', query.page.toString());
+
+  if (query.pageSize)
+    params.append('pageSize', query.pageSize.toString());
+
+  if (query.search)
+    params.append('search', query.search);
+
+  if (query.chapterId)
+    params.append('chapterId', query.chapterId);
+
+  const url = `${Endpoints.topics.list}?${params.toString()}`;
+
+  return this.apiService.get<
+    ApiResponse<PagedResult<TopicListResponse>>
+  >(url);
+}
 
   getTopicById(id: string): Observable<ApiResponse<TopicResponse>> {
     return this.apiService.get<ApiResponse<TopicResponse>>(Endpoints.topics.getById(id));

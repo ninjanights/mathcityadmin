@@ -11,6 +11,6 @@ export const authGuard : CanActivateFn = () => {
   if (tokenService.isLoggedIn()) {
     return true;
   } 
-  return router.createUrlTree(['/login']);
+  return router.createUrlTree(['/auth/login']);
 
 }

@@ -184,7 +184,7 @@ export class LessonPage implements OnInit {
   }
 
   onSave(payload: LessonSaveRequest): void {
-    const { request, thumbnail } = payload;
+    const { request } = payload;
 
     this.saving.set(true);
 
@@ -202,21 +202,21 @@ export class LessonPage implements OnInit {
         isPublished: request.isPublished,
       };
 
-      this.lessonService.updateLesson(id, updateRequest, thumbnail).subscribe({
+      this.lessonService.updateLesson(id, updateRequest).subscribe({
         next: () => {
           this.onCancel();
           this.loadLessons();
         },
         error: () => {
           this.saving.set(false);
-          alert('Upload failed');
+          alert('Unable to save lesson');
         },
       });
 
       return;
     }
 
-    this.lessonService.createLesson(request, thumbnail).subscribe({
+    this.lessonService.createLesson(request).subscribe({
       next: () => {
         alert('Lesson created successfully');
         this.onCancel();
@@ -224,7 +224,7 @@ export class LessonPage implements OnInit {
       },
       error: () => {
         this.saving.set(false);
-        alert('Upload failed');
+        alert('Unable to create lesson');
       },
     });
   }

@@ -57,16 +57,18 @@ export class TopicPage implements OnInit {
   editPositions = computed(() => Array.from({ length: this.topics().length }, (_, i) => i + 1));
 
   loadChapters(): void {
-    this.chapterService.getChapters().subscribe({
-      next: (response) => {
-        this.chapters.set(response.data);
-      },
-    });
-  }
+  this.chapterService.getChapters({
+    page: 1,
+    pageSize: 1000
+  }).subscribe({
+    next: (response) => {
+      this.chapters.set(response.data.items);
+    },
+  });
+}
 
   loadTopics(search?: string): void {
     this.loading.set(true);
-
     this.topicService.getTopics(search).subscribe({
       next: (response) => {
         console.log(response);

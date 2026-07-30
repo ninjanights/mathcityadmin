@@ -18,7 +18,13 @@ export class ChapterPage implements OnInit {
 
   chapters = signal<ChapterListResponse[]>([]);
   subjects = signal<SubjectListResponse[]>([]);
+  selectedSubject = signal<SubjectListResponse | null>(null);
   loading = signal(false);
+search = signal('');
+page = signal(1);
+pageSize = 5;
+totalCount = signal(0);
+totalPages = signal(0);
 
   sortOrder = signal('title-asc');
   isCreating = signal(false);
@@ -42,7 +48,7 @@ export class ChapterPage implements OnInit {
 
   ngOnInit(): void {
     this.loadSubjects();
-    this.loadChapters();
+  
   }
 
 createPositions = computed(() =>
@@ -58,22 +64,37 @@ editPositions = computed(() =>
     (_, i) => i + 1
   )
 );
-  loadSubjects(): void {
-    this.subjectService.getSubjects().subscribe({
-      next: (response) => {
-        this.subjects.set(response.data);
-      },
-    });
-  }
+
+loadSubjects(): void {
+  this.subjectService.getSubjects().subscribe({
+    next: (response) => {
+      this.subjects.set(response.data);
+
+      if (response.data.length > 0) {
+
+        console.log(response);
+console.log(response.data);
+        this.selectedSubject.set(response.data[0]);  
+        this.loadChapters();                          
+      }
+    },
+  });
+}
 
   loadChapters(search?: string): void {
     this.loading.set(true);
 
-    this.chapterService.getChapters(search).subscribe({
+    this.chapterService.getChapters({
+  page: this.page(),
+  pageSize: this.pageSize,
+  search,
+  subjectSlug: this.selectedSubject()?.slug ?? undefined
+}).subscribe({
       next: (response) => {
-        this.chapters.set(response.data);
-
-       
+        console.log(response, "👽");
+        this.chapters.set(response.data.items);
+this.totalCount.set(response.data.totalCount);
+this.totalPages.set(response.data.totalPages);       
         this.loading.set(false);
       },
       error: () => {
@@ -82,9 +103,11 @@ editPositions = computed(() =>
     });
   }
 
-  onSearch(query: string): void {
-    this.loadChapters(query);
-  }
+onSearch(query: string): void {
+    this.search.set(query);
+  this.page.set(1);
+  this.loadChapters(query);
+}
 
   onSort(order: string): void {
     this.sortOrder.set(order);
@@ -105,6 +128,12 @@ editPositions = computed(() =>
       },
     });
   }
+
+  onSubjectChange(subject: SubjectListResponse) {
+  this.selectedSubject.set(subject);
+  this.page.set(1);
+   this.loadChapters(this.search());
+}
 
   onDelete(chapter: ChapterListResponse): void {
     if (confirm(`Are you sure you want to delete ${chapter.title}?`)) {

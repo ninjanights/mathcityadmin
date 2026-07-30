@@ -17,7 +17,8 @@
   </div>
 
   <div class="space-y-6 rounded-2xl bg-neutral-100 p-4 dark:bg-[#313131]">
-    <form [formGroup]="form" (ngSubmit)="submit(resourceInput)" class="space-y-5">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
+      @if (isPdfResource()) {
       <div>
         <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
           Title
@@ -52,7 +53,7 @@
           @for (type of resourceTypes; track type.value) {
             <button
               type="button"
-              (click)="selectResourceType(type.value, resourceInput)"
+              (click)="selectResourceType(type.value)"
               [class]="
                 form.controls.resourceType.value === type.value
                   ? 'rounded-full bg-neutral-300 px-3 py-1.5 text-sm font-semibold text-neutral-900 transition dark:bg-neutral-700 dark:text-neutral-100'
@@ -81,13 +82,14 @@
           (click)="resourceInput.click()"
           class="flex w-full items-center justify-between gap-4 rounded-xl bg-neutral-200 px-4 py-3 text-left text-sm text-neutral-500 transition hover:text-neutral-900 dark:bg-neutral-800 dark:hover:text-neutral-100"
         >
-          <span>{{ fileName() || 'Choose file from computer' }}</span>
+          <span>{{ fileName() || 'Choose PDF from computer' }}</span>
           <span class="material-symbols-outlined text-base"> upload_file </span>
         </button>
         @if (fileError()) {
           <p class="mt-2 text-xs font-medium text-red-500">{{ fileError() }}</p>
         }
       </div>
+      }
 
       <div>
         <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
@@ -113,7 +115,7 @@
       <div class="flex justify-end gap-3">
         <button
           type="submit"
-          [disabled]="form.invalid || !selectedFile() || saving()"
+          [disabled]="form.invalid || (isPdfResource() && !selectedFile()) || saving()"
           class="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-300"
         >
           {{ saving() ? 'Adding...' : 'Add Resource' }}

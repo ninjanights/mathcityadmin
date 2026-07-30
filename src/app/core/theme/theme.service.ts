@@ -5,11 +5,15 @@ import { Injectable, signal } from '@angular/core';
 })
 export class ThemeService {
   private readonly storageKey = 'math-city-theme';
-  readonly isDark = signal(true);
+  readonly isDark = signal(false);
 
   constructor() {
-    const savedTheme = typeof localStorage === 'undefined' ? null : localStorage.getItem(this.storageKey);
-    this.setTheme(savedTheme ? savedTheme === 'dark' : true);
+    this.setTheme(false);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = 'en';
+      document.documentElement.setAttribute('translate', 'no');
+    }
   }
 
   setTheme(isDark: boolean): void {

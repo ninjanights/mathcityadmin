@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { LoginResponse } from '../../features/auth/models/login-response';
+import { AppConfig } from '../config/app.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
 
-  private readonly ACCESS_TOKEN_KEY = 'accessToken';
-  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
+  private readonly ACCESS_TOKEN_KEY = AppConfig.tokenKey;
+  private readonly REFRESH_TOKEN_KEY = AppConfig.refreshTokenKey;
   private readonly USER_KEY = 'user';
 
   // Save login data
@@ -18,7 +19,6 @@ export class TokenService {
     localStorage.setItem(
       this.USER_KEY,
       JSON.stringify({
-        userId: response.userId,
         fullName: response.fullName,
         email: response.email,
         roles: response.roles

@@ -5,7 +5,6 @@ export interface LessonListResponse {
   slug: string;
   difficulty: number;
   readingTimeMinutes: number;
-  thumbnailUrl: string;
   displayOrder: number;
   isPublished: boolean;
   topicId: string;
@@ -15,13 +14,11 @@ export interface LessonResponse {
   id: string;
   topicId: string;
   title: string;
-
   slug: string;
   summary: string;
   markdownContent: string;
   difficulty: number;
   readingTimeMinutes: number;
-  thumbnailUrl: string;
   displayOrder: number;
   isPublished: boolean;
   isBookmarked: boolean;
@@ -42,7 +39,6 @@ export interface UpdateLessonRequest extends CreateLessonRequest {}
 
 export interface LessonSaveRequest {
   request: CreateLessonRequest;
-  thumbnail?: File;
 }
 
 export interface MoveLessonRequest {

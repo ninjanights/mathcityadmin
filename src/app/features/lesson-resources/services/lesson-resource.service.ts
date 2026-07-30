@@ -24,7 +24,7 @@ export class LessonResourceService {
 
   create(
     request: CreateLessonResourceRequest,
-    file: File,
+    file?: File,
   ): Observable<ApiResponse<LessonResourceListResponse>> {
     const formData = new FormData();
 
@@ -32,8 +32,11 @@ export class LessonResourceService {
     formData.append('title', request.title);
     formData.append('resourceType', request.resourceType.toString());
     formData.append('displayOrder', request.displayOrder.toString());
-    formData.append('description', request.description.toString())
-    formData.append('file', file);
+    formData.append('description', request.description);
+
+    if (file) {
+      formData.append('file', file);
+    }
 
     return this.apiService.post<ApiResponse<LessonResourceListResponse>>(
       Endpoints.lessonResources.create,
@@ -47,7 +50,7 @@ export class LessonResourceService {
     formData.append('title', request.title);
     formData.append('resourceType', request.resourceType.toString());
     formData.append('displayOrder', request.displayOrder.toString());
-     formData.append('description', request.description.toString());
+    formData.append('description', request.description);
 
     return this.apiService.put<ApiResponse<LessonResourceListResponse>>(
       Endpoints.lessonResources.update(id),

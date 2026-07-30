@@ -33,18 +33,17 @@ export class LessonResourcePage implements OnInit {
   selectedLessonId = signal('');
   selectedLessonTitle = signal('');
   hasSelectedLesson = computed(() => Boolean(this.selectedLessonId()));
+  isPdfResource = computed(() => this.form.controls.resourceType.value === ResourceType.Pdf);
 
   resourceTypes = [
-    { label: 'Image', value: ResourceType.Image, accept: 'image/jpeg,image/png,image/webp,image/gif,image/svg+xml' },
+    { label: 'Text', value: ResourceType.Text },
     { label: 'PDF', value: ResourceType.Pdf, accept: 'application/pdf' },
-    { label: 'Video', value: ResourceType.Video, accept: 'video/mp4,video/quicktime,video/webm' },
-    { label: 'Zip', value: ResourceType.Zip, accept: '.zip,.rar,.7z' },
   ];
 
   form = this.fb.group({
     title: ['', Validators.required],
     description: [''],
-    resourceType: [ResourceType.Image, Validators.required],
+    resourceType: [ResourceType.Text, Validators.required],
     displayOrder: [1, [Validators.required, Validators.min(1)]],
   });
 
@@ -54,8 +53,7 @@ export class LessonResourcePage implements OnInit {
 
   selectedAccept(): string {
     return (
-      this.resourceTypes.find((type) => type.value === this.form.controls.resourceType.value)?.accept ??
-      '*/*'
+      'application/pdf'
     );
   }
 
@@ -93,7 +91,7 @@ export class LessonResourcePage implements OnInit {
     this.form.patchValue({
       title: '',
         description: '',
-      resourceType: ResourceType.Image,
+      resourceType: ResourceType.Text,
       displayOrder: 1,
     });
     this.loadResources();
@@ -119,9 +117,9 @@ export class LessonResourcePage implements OnInit {
     });
   }
 
-  selectResourceType(type: ResourceType, input?: HTMLInputElement): void {
+  selectResourceType(type: ResourceType): void {
     this.form.controls.resourceType.setValue(type);
-    this.clearFile(input);
+    this.clearFile();
   }
 
   onFileSelected(event: Event): void {
@@ -154,12 +152,12 @@ export class LessonResourcePage implements OnInit {
     return this.resourceTypes.find((type) => type.value === value)?.label ?? 'Resource';
   }
 
-  submit(input?: HTMLInputElement): void {
+  submit(): void {
     const file = this.selectedFile();
 
-    if (this.form.invalid || !file) {
+    if (this.form.invalid || (this.isPdfResource() && !file)) {
       this.form.markAllAsTouched();
-      this.fileError.set(file ? '' : 'Select a resource file.');
+      this.fileError.set(this.isPdfResource() && !file ? 'Select a PDF file.' : '');
       return;
     }
 
@@ -168,7 +166,7 @@ export class LessonResourcePage implements OnInit {
     this.lessonResourceService
       .create(
         {
-          lessonId: this.lessonId,
+          lessonId: this.selectedLessonId(),
           title: this.form.controls.title.value ?? '',
           resourceType: Number(this.form.controls.resourceType.value) as ResourceType,
           displayOrder: Number(this.form.controls.displayOrder.value),
@@ -181,9 +179,9 @@ export class LessonResourcePage implements OnInit {
           this.form.patchValue({
             title: '',
               description: '',
-            resourceType: ResourceType.Image,
+            resourceType: ResourceType.Text,
           });
-          this.clearFile(input);
+          this.clearFile();
           this.saving.set(false);
           this.loadResources();
         },

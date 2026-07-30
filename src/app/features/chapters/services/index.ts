@@ -8,6 +8,8 @@ import {
   ChapterResponse,
   CreateChapterRequest,
   UpdateChapterRequest,
+  PagedResult,
+  ChapterQuery
 } from '../models';
 
 @Injectable({
@@ -16,12 +18,30 @@ import {
 export class ChapterService {
   private readonly apiService = inject(ApiService);
 
-  getChapters(search?: string): Observable<ApiResponse<ChapterListResponse[]>> {
-    const url = search
-      ? `${Endpoints.chapters.list}?search=${encodeURIComponent(search)}`
-      : Endpoints.chapters.list;
-    return this.apiService.get<ApiResponse<ChapterListResponse[]>>(url);
-  }
+  getChapters(
+  query: ChapterQuery
+): Observable<ApiResponse<PagedResult<ChapterListResponse>>> {
+
+  const params = new URLSearchParams();
+
+  if (query.page)
+    params.append('page', query.page.toString());
+
+  if (query.pageSize)
+    params.append('pageSize', query.pageSize.toString());
+
+  if (query.search)
+    params.append('search', query.search);
+
+  if (query.subjectSlug)
+    params.append('subjectSlug', query.subjectSlug);
+
+  const url = `${Endpoints.chapters.list}?${params.toString()}`;
+
+  return this.apiService.get<
+    ApiResponse<PagedResult<ChapterListResponse>>
+  >(url);
+}
 
   getChapterById(id: string): Observable<ApiResponse<ChapterResponse>> {
     return this.apiService.get<ApiResponse<ChapterResponse>>(Endpoints.chapters.getById(id));

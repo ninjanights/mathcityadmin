@@ -44,9 +44,6 @@ chapters = this.chapterStore.chapters;
   selectedTopic = signal<TopicResponse | undefined>(undefined);
 
  sortedTopics = computed(() => {
-  console.log('topics signal:', this.topics);
-  console.log('topics value:', this.topics());
-
   const order = this.sortOrder();
 
   return [...this.topics()].sort((a, b) => {
@@ -62,6 +59,10 @@ chapters = this.chapterStore.chapters;
   });
 });
 
+pageNumbers = computed(() =>
+  Array.from({ length: this.totalPages() }, (_, i) => i + 1),
+);
+
 ngOnInit() {
   if (this.subjectStore.subjects().length === 0) {
     this.loadSubjects();
@@ -72,11 +73,6 @@ ngOnInit() {
   }
 }
 
-  createPositions = computed(() =>
-    Array.from({ length: this.topics().length + 1 }, (_, i) => i + 1),
-  );
-
-  editPositions = computed(() => Array.from({ length: this.topics().length }, (_, i) => i + 1));
 
   loadChapters(): void {
   this.chapterService.getChapters({
@@ -100,18 +96,18 @@ ngOnInit() {
 
 
   loadSubjects(): void {
-  this.subjectService.getSubjects().subscribe({
-    next: (response) => {
-      this.subjectStore.setSubjects(response.data);
+    this.subjectService.getSubjects({ pageSize: 100 }).subscribe({
+      next: (response) => {
+        const subjects = response.data?.items ?? [];
+        this.subjectStore.setSubjects(subjects);
 
-      if (response.data.length > 0) {
-        this.subjectStore.selectedSubject.set(response.data[0]);
-
-        this.loadChapters();
-      }
-    },
-  });
-}
+        if (subjects.length > 0) {
+          this.subjectStore.selectedSubject.set(subjects[0]);
+          this.loadChapters();
+        }
+      },
+    });
+  }
 
   loadTopics(search?: string): void {
   this.loading.set(true);
@@ -122,10 +118,15 @@ ngOnInit() {
     search,
     chapterId: this.chapterStore.selectedChapter()?.id
   }).subscribe({
-    next: (response) => {
 
+    next: (response) => {
+console.log('NEXT ❤️‍🔥');
+
+console.log(response);
      this.topicStore.setTopics(response.data.items);
 
+console.log('Store topics: 🥬', this.topicStore.topics());
+   this.loading.set(false);
 if (response.data.items.length > 0) {
   this.topicStore.selectedTopic.set(response.data.items[0]);
 }
@@ -135,7 +136,9 @@ if (response.data.items.length > 0) {
 
       this.loading.set(false);
     },
-    error: () => {
+    error: (err) => {
+        console.log('ERROR');
+    console.error(err);
       this.loading.set(false);
     }
   });
@@ -149,6 +152,11 @@ if (response.data.items.length > 0) {
 
   onSort(order: string): void {
     this.sortOrder.set(order);
+  }
+
+  onPageChange(newPage: number): void {
+    this.page.set(newPage);
+    this.loadTopics(this.search());
   }
 
   onCreate(): void {
@@ -189,7 +197,6 @@ if (response.data.items.length > 0) {
 
       const updateRequest = {
         title: request.title,
-        displayOrder: request.displayOrder,
       };
 
       this.topicService.updateTopic(id, updateRequest).subscribe({
@@ -214,5 +221,11 @@ if (response.data.items.length > 0) {
     this.isCreating.set(false);
     this.isEditing.set(false);
     this.selectedTopic.set(undefined);
+  }
+
+  onMove(topic: TopicListResponse, direction: 'Up' | 'Down'): void {
+    this.topicService.moveTopic(topic.id, direction).subscribe({
+      next: () => this.loadTopics(this.search()),
+    });
   }
 }

@@ -7,6 +7,8 @@
         [subjectColor]="subjectColor(chapter.subjectId)"
         (edit)="edit.emit($event)"
         (delete)="delete.emit($event)"
+        (moveUp)="moveUp.emit($event)"
+        (moveDown)="moveDown.emit($event)"
       ></app-chapter-card>
     }
   </div>

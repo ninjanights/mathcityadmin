@@ -44,10 +44,26 @@
 
     <!-- Right -->
     <div class="flex items-center gap-5">
-      <div
-        class="h-4 w-4 rounded-full border border-neutral-200 dark:border-neutral-700"
+      <div class="h-4 w-4 rounded-full border border-neutral-200 dark:border-neutral-700"
         [style.background]="subject().color"
       ></div>
+
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          (click)="moveUp.emit(subject())"
+          class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          Up
+        </button>
+        <button
+          type="button"
+          (click)="moveDown.emit(subject())"
+          class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          Down
+        </button>
+      </div>
 
       <button
         type="button"

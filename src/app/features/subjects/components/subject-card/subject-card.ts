@@ -11,4 +11,6 @@ export class SubjectCardComponent {
   edit = output<SubjectListResponse>();
   delete = output<SubjectListResponse>();
   publish = output<SubjectListResponse>();
+  moveUp = output<SubjectListResponse>();
+  moveDown = output<SubjectListResponse>();
 }

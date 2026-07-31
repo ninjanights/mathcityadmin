@@ -15,12 +15,10 @@ export interface TopicResponse {
 export interface CreateTopicRequest {
   chapterId: string;
   title: string;
-  displayOrder: number;
 }
 
 export interface UpdateTopicRequest {
   title: string;
-  displayOrder: number;
 }
 
 export interface MoveTopicRequest {

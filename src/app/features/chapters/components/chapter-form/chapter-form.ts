@@ -13,7 +13,6 @@ import { computed } from '@angular/core';
 })
 export class ChapterForm implements OnChanges {
   private readonly fb = inject(FormBuilder);
-  positions = input<number[]>([]);
   chapter = input<ChapterResponse>();
   subjects = input<SubjectListResponse[]>([]);
   save = output<CreateChapterRequest>();
@@ -29,7 +28,6 @@ export class ChapterForm implements OnChanges {
     subjectId: ['', Validators.required],
     title: ['', [Validators.required, Validators.maxLength(200)]],
     description: ['', [Validators.maxLength(1000)]],
-    displayOrder: [1, [Validators.required, Validators.min(1)]],
   });
 
   ngOnChanges(): void {
@@ -42,7 +40,6 @@ export class ChapterForm implements OnChanges {
         subjectId: chapter.subjectId,
         title: chapter.title,
         description: chapter.description ?? '',
-        displayOrder: chapter.displayOrder,
       });
 
       const idx = this.subjects().findIndex((s) => s.id === chapter.subjectId);
@@ -58,7 +55,6 @@ export class ChapterForm implements OnChanges {
         subjectId: firstSubject?.id ?? '',
         title: '',
         description: '',
-        displayOrder: this.positions().length + 1,
       });
     }
   }

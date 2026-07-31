@@ -15,7 +15,6 @@ export class LessonForm implements OnChanges {
 
   lesson = input<LessonResponse>();
   topics = input<TopicListResponse[]>([]);
-  positions = input<number[]>([]);
   saving = input(false);
 
   save = output<LessonSaveRequest>();
@@ -39,7 +38,6 @@ export class LessonForm implements OnChanges {
     difficulty: [1, Validators.required],
     readingTimeMinutes: [5, [Validators.required, Validators.min(1)]],
     isPublished: [true],
-    displayOrder: [1, [Validators.required, Validators.min(1)]],
   });
 
   ngOnChanges(): void {
@@ -55,7 +53,6 @@ export class LessonForm implements OnChanges {
         difficulty: lesson.difficulty,
         readingTimeMinutes: lesson.readingTimeMinutes,
         isPublished: lesson.isPublished,
-        displayOrder: lesson.displayOrder,
       });
 
       const index = this.topics().findIndex((topic) => topic.id === lesson.topicId);
@@ -74,7 +71,6 @@ export class LessonForm implements OnChanges {
         difficulty: 1,
         readingTimeMinutes: 5,
         isPublished: true,
-        displayOrder: this.positions().length + 1,
       });
     }
 
@@ -143,7 +139,6 @@ export class LessonForm implements OnChanges {
         ...request,
         difficulty: Number(request.difficulty),
         readingTimeMinutes: Number(request.readingTimeMinutes),
-        displayOrder: Number(request.displayOrder),
       },
     });
   }

@@ -4,29 +4,79 @@
     [subjects]="subjects()"
     (save)="onSave($event)"
     (cancel)="onCancel()"
-    [positions]="isEditing() ? editPositions() : createPositions()"
   ></app-chapter-form>
 } @else {
-  @if (loading()) {
-    <div class="flex items-center justify-center py-12">
-      <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">
-        Loading Chapters...
-      </p>
-    </div>
-  } @else {
-    <div class="flex flex-col gap-2">
-      <app-chapter-header
-        (create)="onCreate()"
-        (search)="onSearch($event)"
-        (sort)="onSort($event)"
-      ></app-chapter-header>
+  <div class="flex flex-col gap-2">
+    <app-horizontal-selector
+    [items]="subjectItems()"
+  [selectedId]="subjectStore.selectedSubject()?.id ?? null"
+      (selected)="onSubjectSelected($event)"
+    >
+    </app-horizontal-selector>
+    <app-chapter-header
+      (create)="onCreate()"
+      (search)="onSearch($event)"
+      (sort)="onSort($event)"
+    ></app-chapter-header>
 
+    @if (loading()) {
+      <div class="flex items-center justify-center py-12">
+        <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">
+          Loading Chapters...
+        </p>
+      </div>
+    } @else {
       <app-chapter-list
         [chapters]="sortedChapters()"
         [subjects]="subjects()"
         (edit)="onEdit($event)"
         (delete)="onDelete($event)"
-      ></app-chapter-list>
-    </div>
-  }
+        (moveUp)="onMove($event, 'Up')"
+        (moveDown)="onMove($event, 'Down')"
+      >
+      </app-chapter-list>
+
+      @if (totalPages() > 1) {
+        <div class="flex items-center justify-between pt-2">
+          <p class="text-xs text-neutral-500 dark:text-neutral-400">
+            {{ totalCount() }} chapter{{ totalCount() === 1 ? '' : 's' }} total
+          </p>
+
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              (click)="onPageChange(page() - 1)"
+              [disabled]="page() <= 1"
+              class="rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+            >
+              Prev
+            </button>
+
+            @for (p of pageNumbers(); track p) {
+              <button
+                type="button"
+                (click)="onPageChange(p)"
+                [class]="
+                  page() === p
+                    ? 'rounded-lg px-3 py-1.5 text-xs font-semibold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+                    : 'rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200'
+                "
+              >
+                {{ p }}
+              </button>
+            }
+
+            <button
+              type="button"
+              (click)="onPageChange(page() + 1)"
+              [disabled]="page() >= totalPages()"
+              class="rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </div>
 }

@@ -12,4 +12,6 @@ export class TopicCard {
 
   edit = output<TopicListResponse>();
   delete = output<TopicListResponse>();
+  moveUp = output<TopicListResponse>();
+  moveDown = output<TopicListResponse>();
 }

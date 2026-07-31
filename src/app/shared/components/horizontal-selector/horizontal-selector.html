@@ -1,0 +1,63 @@
+<div class="flex items-center gap-2 w-full">
+
+  <!-- Previous -->
+
+  <button
+    type="button"
+    (click)="previous()"
+    [disabled]="!canGoPrevious()"
+    class="h-10 w-10 rounded-lg border
+           bg-white
+           hover:bg-gray-100
+           disabled:opacity-40
+           disabled:cursor-not-allowed">
+
+    ◀
+  </button>
+
+  <!-- Items -->
+
+  <div class="flex-1 flex gap-2 overflow-hidden">
+
+    @for(item of visibleItems(); track item.id){
+
+      <button
+        type="button"
+        (click)="select(item)"
+        class="flex-1 rounded-lg border px-4 py-2
+               whitespace-nowrap
+               transition-all
+               font-medium"
+
+        [class.bg-blue-600]="selectedId() === item.id"
+        [class.text-white]="selectedId() === item.id"
+        [class.border-blue-600]="selectedId() === item.id"
+
+        [class.bg-white]="selectedId() !== item.id"
+        [class.text-gray-700]="selectedId() !== item.id"
+        [class.hover:bg-gray-100]="selectedId() !== item.id">
+
+        {{ item.label }}
+
+      </button>
+
+    }
+
+  </div>
+
+  <!-- Next -->
+
+  <button
+    type="button"
+    (click)="next()"
+    [disabled]="!canGoNext()"
+    class="h-10 w-10 rounded-lg border
+           bg-white
+           hover:bg-gray-100
+           disabled:opacity-40
+           disabled:cursor-not-allowed">
+
+    ▶
+  </button>
+
+</div>

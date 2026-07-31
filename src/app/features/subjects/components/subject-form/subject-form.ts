@@ -12,7 +12,6 @@ import { CreateSubjectRequest, SubjectResponse } from '../../models';
 })
 export class SubjectForm implements OnChanges {
   private readonly fb = inject(FormBuilder);
-  positions = input<number[]>([]);
   subject = input<SubjectResponse>();
   icons = MATERIAL_ICONS;
   save = output<CreateSubjectRequest>();
@@ -40,7 +39,6 @@ export class SubjectForm implements OnChanges {
     description: ['', [Validators.maxLength(500)]],
     icon: ['school', [Validators.maxLength(100)]],
     color: ['#6B7280', Validators.required],
-    displayOrder: [1, [Validators.required, Validators.min(1)]],
     isPublished: [false, Validators.required],
   });
 
@@ -59,12 +57,10 @@ export class SubjectForm implements OnChanges {
         description: sub.description ?? '',
         icon: sub.icon,
         color: sub.color,
-        displayOrder: sub.displayOrder,
         isPublished: sub.isPublished,
       });
     } else {
       this.form.patchValue({
-        displayOrder: this.positions().length,
         color: "#6B7280",
         isPublished: false,
       });

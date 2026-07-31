@@ -22,6 +22,12 @@ export class SubjectPage implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
 
+  page = signal(1);
+  pageSize = 5;
+  totalCount = signal(0);
+  totalPages = signal(0);
+  search = signal('');
+
   sortOrder = signal<string>('name-asc');
   isCreating = signal(false);
   isEditing = signal(false);
@@ -39,23 +45,30 @@ export class SubjectPage implements OnInit {
       return 0;
     });
   });
-  
+
+  pageNumbers = computed(() =>
+    Array.from({ length: this.totalPages() }, (_, i) => i + 1),
+  );
+
   ngOnInit() {
-    if (this.subjectStore.subjects().length === 0) {
-      this.loadSubjects();
-    } else if (!this.subjectStore.selectedSubject()) {
-      this.subjectStore.selectedSubject.set(this.subjectStore.subjects()[0]);
-    }
+    this.loadSubjects();
   }
 
   loadSubjects(search?: string) {
     this.loading.set(true);
-    this.subjectService.getSubjects(search).subscribe({
+    this.subjectService.getSubjects({
+      search,
+      page: this.page(),
+      pageSize: this.pageSize,
+    }).subscribe({
       next: (response) => {
-        this.subjectStore.setSubjects(response.data);
+        const items = response.data?.items ?? [];
+        this.subjectStore.setSubjects(items);
+        this.totalCount.set(response.data?.totalCount ?? 0);
+        this.totalPages.set(response.data?.totalPages ?? 0);
 
-        if (response.data.length > 0 && !this.subjectStore.selectedSubject()) {
-          this.subjectStore.selectedSubject.set(response.data[0]);
+        if (items.length > 0 && !this.subjectStore.selectedSubject()) {
+          this.subjectStore.selectedSubject.set(items[0]);
         }
         this.loading.set(false);
       },
@@ -66,11 +79,18 @@ export class SubjectPage implements OnInit {
   }
 
   onSearch(query: string) {
+    this.search.set(query);
+    this.page.set(1);
     this.loadSubjects(query);
   }
 
   onSort(order: string) {
     this.sortOrder.set(order);
+  }
+
+  onPageChange(newPage: number) {
+    this.page.set(newPage);
+    this.loadSubjects(this.search());
   }
 
   onCreate() {
@@ -89,17 +109,6 @@ export class SubjectPage implements OnInit {
     });
   }
 
-  positions = computed(() => {
-    const count = this.subjects().length;
-
-    return Array.from(
-      {
-        length: this.isEditing() ? count : count + 1,
-      },
-      (_, i) => i + 1,
-    );
-  });
-
   onPublish(subject: SubjectListResponse) {
     this.subjectService.getSubjectById(subject.id).subscribe({
       next: (response) => {
@@ -113,7 +122,7 @@ export class SubjectPage implements OnInit {
         };
         this.subjectService.updateSubject(subject.id, updateRequest).subscribe({
           next: () => {
-            this.loadSubjects();
+            this.loadSubjects(this.search());
           },
         });
       },
@@ -124,7 +133,7 @@ export class SubjectPage implements OnInit {
     if (confirm(`Are you sure you want to delete ${subject.name}?`)) {
       this.subjectService.deleteSubject(subject.id).subscribe({
         next: () => {
-          this.loadSubjects();
+          this.loadSubjects(this.search());
         },
       });
     }
@@ -140,14 +149,14 @@ export class SubjectPage implements OnInit {
       this.subjectService.updateSubject(id, updateRequest).subscribe({
         next: () => {
           this.onCancel();
-          this.loadSubjects();
+          this.loadSubjects(this.search());
         },
       });
     } else {
       this.subjectService.createSubject(request).subscribe({
         next: () => {
           this.onCancel();
-          this.loadSubjects();
+          this.loadSubjects(this.search());
         },
       });
     }
@@ -157,5 +166,11 @@ export class SubjectPage implements OnInit {
     this.isCreating.set(false);
     this.isEditing.set(false);
     this.selectedSubject.set(undefined);
+  }
+
+  onMove(subject: SubjectListResponse, direction: 'Up' | 'Down') {
+    this.subjectService.moveSubject(subject.id, direction).subscribe({
+      next: () => this.loadSubjects(this.search()),
+    });
   }
 }

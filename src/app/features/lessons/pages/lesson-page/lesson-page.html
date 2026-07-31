@@ -1,9 +1,8 @@
 @if (isCreating() || isEditing()) {
 
 <app-lesson-form
-  [lesson]="selectedLesson()"
+  [lesson]="selectedLesson() ?? undefined"
   [topics]="topics()"
-  [positions]="isEditing() ? editPositions() : createPositions()"
   [saving]="saving()"
   (save)="onSave($event)"
   (cancel)="onCancel()"
@@ -52,7 +51,51 @@
     (lessonTags)="onLessonTags($event)"
     (lessonResources)="onLessonResources($event)"
     (practiceQuestions)="onPracticeQuestions($event)"
+    (moveUp)="onMove($event, 'Up')"
+    (moveDown)="onMove($event, 'Down')"
   />
+
+  @if (totalPages() > 1) {
+    <div class="flex items-center justify-between pt-2">
+      <p class="text-xs text-neutral-500 dark:text-neutral-400">
+        {{ totalCount() }} lesson{{ totalCount() === 1 ? '' : 's' }} total
+      </p>
+
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          (click)="onPageChange(page() - 1)"
+          [disabled]="page() <= 1"
+          class="rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          Prev
+        </button>
+
+        @for (p of pageNumbers(); track p) {
+          <button
+            type="button"
+            (click)="onPageChange(p)"
+            [class]="
+              page() === p
+                ? 'rounded-lg px-3 py-1.5 text-xs font-semibold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+                : 'rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200'
+            "
+          >
+            {{ p }}
+          </button>
+        }
+
+        <button
+          type="button"
+          (click)="onPageChange(page() + 1)"
+          [disabled]="page() >= totalPages()"
+          class="rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  }
 
   }
 </div>

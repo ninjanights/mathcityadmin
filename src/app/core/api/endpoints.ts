@@ -11,6 +11,7 @@ export const Endpoints = {
     create: '/api/subjects',
     update: (id: string) => `/api/subjects/${id}`,
     delete: (id: string) => `/api/subjects/${id}`,
+    move: (id: string) => `/api/subjects/${id}/move`,
     chapters: (id: string) => `/api/subjects/${id}/chapters`,
   },
 
@@ -20,6 +21,7 @@ export const Endpoints = {
     create: '/api/chapters',
     update: (id: string) => `/api/chapters/${id}`,
     delete: (id: string) => `/api/chapters/${id}`,
+    move: (id: string) => `/api/chapters/${id}/move`,
     topics: (id: string) => `/api/chapters/${id}/topics`,
   },
 
@@ -52,6 +54,7 @@ export const Endpoints = {
     move: (id: string) => `/api/lessons/${id}/move`,
     resources: (lessonId: string) => `/api/lessons/${lessonId}/resources`,
     practiceQuestions: (lessonId: string) => `/api/lessons/${lessonId}/practicequestions`,
+    movePracticeQuestion: (id: string) => `/api/practicequestions/${id}/move`,
 
     tags: (lessonId: string) => `/api/lessons/${lessonId}/tags`,
     addTag: (lessonId: string) => `/api/lessons/${lessonId}/tags`,

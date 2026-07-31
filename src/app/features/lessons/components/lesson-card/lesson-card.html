@@ -94,6 +94,23 @@
         Questions
       </button>
 
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          (click)="moveUp.emit(lesson())"
+          class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          Up
+        </button>
+        <button
+          type="button"
+          (click)="moveDown.emit(lesson())"
+          class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          Down
+        </button>
+      </div>
+
       <button
         type="button"
         (click)="edit.emit(lesson())"

@@ -64,4 +64,8 @@ export class ChapterService {
   deleteChapter(id: string): Observable<void> {
     return this.apiService.delete<void>(Endpoints.chapters.delete(id));
   }
+
+  moveChapter(id: string, direction: 'Up' | 'Down'): Observable<void> {
+    return this.apiService.patch<void>(Endpoints.chapters.move(id), { direction });
+  }
 }

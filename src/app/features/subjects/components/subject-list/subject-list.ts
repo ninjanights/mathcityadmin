@@ -20,5 +20,7 @@ export class SubjectList {
   edit = output<SubjectListResponse>();
   delete = output<SubjectListResponse>();
   publish = output<SubjectListResponse>();
+  moveUp = output<SubjectListResponse>();
+  moveDown = output<SubjectListResponse>();
 }
 

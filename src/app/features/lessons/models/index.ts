@@ -31,7 +31,6 @@ export interface CreateLessonRequest {
   markdownContent: string;
   difficulty: number;
   readingTimeMinutes: number;
-  displayOrder: number;
   isPublished: boolean;
 }
 

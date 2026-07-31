@@ -32,9 +32,27 @@
                   {{ $any(question).difficulty || $any(question).questionType || 'Attached question' }}
                 </p>
               </div>
-              @if ($any(question).displayOrder) {
-                <span class="font-mono text-xs text-neutral-400">#{{ $any(question).displayOrder }}</span>
-              }
+              <div class="flex items-center gap-3">
+                @if ($any(question).displayOrder) {
+                  <span class="font-mono text-xs text-neutral-400">#{{ $any(question).displayOrder }}</span>
+                }
+                <div class="flex items-center gap-1">
+                  <button
+                    type="button"
+                    (click)="onMove(question, 'Up')"
+                    class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+                  >
+                    Up
+                  </button>
+                  <button
+                    type="button"
+                    (click)="onMove(question, 'Down')"
+                    class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+                  >
+                    Down
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         }

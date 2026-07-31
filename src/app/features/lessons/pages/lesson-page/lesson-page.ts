@@ -2,11 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LessonService } from '../../services';
-import {
-  LessonSaveRequest,
-  LessonListResponse,
-  LessonResponse,
-} from '../../models';
+import { LessonSaveRequest, LessonListResponse, LessonResponse } from '../../models';
 
 import { TopicService } from '../../../topics/services';
 import { TopicListResponse } from '../../../topics/models';
@@ -15,6 +11,15 @@ import { LessonForm, LessonHeader, LessonList } from '../../components';
 import { LessonTagPage } from '../../../lesson-tags/pages/lesson-tag-page/lesson-tag-page';
 import { LessonResourcePage } from '../../../lesson-resources/pages/lesson-resource-page/lesson-resource-page';
 import { PracticeQuestionPage } from '../../../practice-questions/pages/practice-question-page/practice-question-page';
+
+import { ChapterStore } from '../../../../shared/stores/chapter.store';
+import { TopicStore } from '../../../../shared/stores/topic.store';
+import { SubjectStore } from '../../../../shared/stores/subject.store';
+import { LessonStore } from '../../../../shared/stores/lesson.store';
+import { SubjectService } from '../../../subjects/services';
+import { ChapterService } from '../../../chapters/services';
+import { ChapterListResponse } from '../../../chapters/models';
+import { SubjectListResponse } from '../../../subjects/models';
 
 @Component({
   selector: 'app-lesson-page',
@@ -26,17 +31,35 @@ import { PracticeQuestionPage } from '../../../practice-questions/pages/practice
     LessonForm,
     LessonTagPage,
     LessonResourcePage,
-    PracticeQuestionPage
+    PracticeQuestionPage,
   ],
   templateUrl: './lesson-page.html',
 })
 export class LessonPage implements OnInit {
   private readonly lessonService = inject(LessonService);
+
+  private readonly subjectService = inject(SubjectService);
+  private readonly chapterService = inject(ChapterService);
   private readonly topicService = inject(TopicService);
 
-  lessons = signal<LessonListResponse[]>([]);
-  topics = signal<TopicListResponse[]>([]);
+  private readonly subjectStore = inject(SubjectStore);
+  private readonly chapterStore = inject(ChapterStore);
+  private readonly topicStore = inject(TopicStore);
+  private readonly lessonStore = inject(LessonStore);
+
+  subjects = this.subjectStore.subjects;
+  chapters = this.chapterStore.chapters;
+  topics = this.topicStore.topics;
+  lessons = this.lessonStore.lessons;
+
   loading = signal(false);
+  page = signal(1);
+  pageSize = 5;
+
+  search = signal('');
+
+  totalCount = signal(0);
+  totalPages = signal(0);
 
   selectedLessonForTags = signal<LessonResponse | undefined>(undefined);
   isManagingTags = signal(false);
@@ -51,7 +74,7 @@ export class LessonPage implements OnInit {
   isCreating = signal(false);
   isEditing = signal(false);
   saving = signal(false);
-  selectedLesson = signal<LessonResponse | undefined>(undefined);
+  selectedLesson = this.lessonStore.selectedLesson;
   sortedLessons = computed(() => {
     const order = this.sortOrder();
 
@@ -68,91 +91,170 @@ export class LessonPage implements OnInit {
     });
   });
 
-  createPositions = computed(() =>
-    Array.from({ length: this.lessons().length + 1 }, (_, i) => i + 1),
+  pageNumbers = computed(() =>
+    Array.from({ length: this.totalPages() }, (_, i) => i + 1),
   );
 
-  editPositions = computed(() =>
-    Array.from({ length: this.lessons().length }, (_, i) => i + 1),
-  );
 
   ngOnInit(): void {
-    this.loadTopics();
-    this.loadLessons();
+    if (this.subjectStore.subjects().length === 0) {
+      this.loadSubjects();
+    } else if (this.chapterStore.chapters().length === 0) {
+      this.loadChapters();
+    } else if (this.topicStore.topics().length === 0) {
+      this.loadTopics();
+    } else {
+      this.loadLessons();
+    }
   }
 
   loadTopics(): void {
-    this.topicService.getTopics().subscribe({
+    this.topicService
+      .getTopics({
+        page: 1,
+        pageSize: 100,
+        chapterId: this.chapterStore.selectedChapter()?.id,
+      })
+      .subscribe({
+        next: (response) => {
+          const topics = response.data?.items ?? [];
+          this.topicStore.setTopics(topics);
+
+          if (topics.length > 0) {
+            this.topicStore.selectedTopic.set(topics[0]);
+          } else {
+            this.topicStore.selectedTopic.set(null);
+          }
+
+          this.loadLessons();
+        },
+      });
+  }
+
+  loadSubjects(): void {
+    this.subjectService.getSubjects({ pageSize: 100 }).subscribe({
       next: (response) => {
-        this.topics.set(response.data);
+        const subjects = response.data?.items ?? [];
+        this.subjectStore.setSubjects(subjects);
+
+        if (subjects.length > 0) {
+          this.subjectStore.selectedSubject.set(subjects[0]);
+          this.loadChapters();
+        }
       },
     });
   }
 
+  loadChapters(): void {
+    this.chapterService
+      .getChapters({
+        page: 1,
+        pageSize: 100,
+        subjectSlug: this.subjectStore.selectedSubject()?.slug,
+      })
+      .subscribe({
+        next: (response) => {
+          const chapters = response.data?.items ?? [];
+          this.chapterStore.setChapters(chapters);
+
+          if (chapters.length > 0) {
+            this.chapterStore.selectedChapter.set(chapters[0]);
+            this.loadTopics();
+          }
+        },
+      });
+  }
+
   onLessonTags(lesson: LessonListResponse): void {
-  this.lessonService.getLessonById(lesson.id).subscribe({
-    next: (response) => {
-      this.selectedLessonForTags.set(response.data);
-      this.isManagingTags.set(true);
-      this.isManagingResources.set(false);
-      this.isManagingQuestions.set(false);
-      this.isCreating.set(false);
-      this.isEditing.set(false);
-    }
-  });
-}
+    this.lessonService.getLessonById(lesson.id).subscribe({
+      next: (response) => {
+        const selectedLesson = response.data;
+        if (!selectedLesson) return;
+
+        this.selectedLessonForTags.set(selectedLesson);
+        this.isManagingTags.set(true);
+        this.isManagingResources.set(false);
+        this.isManagingQuestions.set(false);
+        this.isCreating.set(false);
+        this.isEditing.set(false);
+      },
+    });
+  }
 
   onLessonResources(lesson: LessonListResponse): void {
     this.lessonService.getLessonById(lesson.id).subscribe({
       next: (response) => {
-        this.selectedLessonForResources.set(response.data);
+        const selectedLesson = response.data;
+        if (!selectedLesson) return;
+
+        this.selectedLessonForResources.set(selectedLesson);
         this.isManagingResources.set(true);
         this.isManagingTags.set(false);
         this.isManagingQuestions.set(false);
         this.isCreating.set(false);
         this.isEditing.set(false);
-      }
+      },
     });
   }
 
   onPracticeQuestions(lesson: LessonListResponse): void {
     this.lessonService.getLessonById(lesson.id).subscribe({
       next: (response) => {
-        this.selectedLessonForQuestions.set(response.data);
+        const selectedLesson = response.data;
+        if (!selectedLesson) return;
+
+        this.selectedLessonForQuestions.set(selectedLesson);
         this.isManagingQuestions.set(true);
         this.isManagingTags.set(false);
         this.isManagingResources.set(false);
         this.isCreating.set(false);
         this.isEditing.set(false);
-      }
+      },
     });
   }
 
   loadLessons(search?: string): void {
     this.loading.set(true);
 
-    this.lessonService.getLessons({ search }).subscribe({
-      next: (response) => {
-        console.log(response.data.items);
-        this.lessons.set(response.data.items);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
+    this.lessonService
+      .getLessons({
+        page: this.page(),
+        pageSize: this.pageSize,
+        search,
+        topicId: this.topicStore.selectedTopic()?.id,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log(response, "les res ---");
+          const result = response.data;
+          this.lessonStore.setLessons(result?.items ?? []);
+          this.totalCount.set(result?.totalCount ?? 0);
+          this.totalPages.set(result?.totalPages ?? 0);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
   }
 
-  onSearch(query: string): void {
-    this.loadLessons(query);
-  }
+ onSearch(query: string): void {
+  this.search.set(query);
+  this.page.set(1);
+  this.loadLessons(query);
+}
 
   onSort(order: string): void {
     this.sortOrder.set(order);
   }
 
+  onPageChange(newPage: number): void {
+    this.page.set(newPage);
+    this.loadLessons(this.search());
+  }
+
   onCreate(): void {
-    this.selectedLesson.set(undefined);
+    this.lessonStore.setSelectedLesson(null);
     this.isCreating.set(true);
     this.isEditing.set(false);
     this.isManagingTags.set(false);
@@ -163,7 +265,10 @@ export class LessonPage implements OnInit {
   onEdit(lesson: LessonListResponse): void {
     this.lessonService.getLessonById(lesson.id).subscribe({
       next: (response) => {
-        this.selectedLesson.set(response.data);
+        const selectedLesson = response.data;
+        if (!selectedLesson) return;
+
+        this.lessonStore.setSelectedLesson(selectedLesson);
         this.isEditing.set(true);
         this.isCreating.set(false);
         this.isManagingTags.set(false);
@@ -177,19 +282,39 @@ export class LessonPage implements OnInit {
     if (confirm(`Are you sure you want to delete ${lesson.title}?`)) {
       this.lessonService.deleteLesson(lesson.id).subscribe({
         next: () => {
-          this.loadLessons();
+this.loadLessons(this.search());
         },
       });
     }
   }
+  onSubjectChange(subject: SubjectListResponse) {
+  this.subjectStore.selectedSubject.set(subject);
+  this.page.set(1);
+
+  this.loadChapters();
+}
+onChapterChange(chapter: ChapterListResponse) {
+  this.chapterStore.selectedChapter.set(chapter);
+  this.page.set(1);
+
+  this.loadTopics();
+}
+onTopicChange(topic: TopicListResponse) {
+  this.topicStore.selectedTopic.set(topic);
+  this.page.set(1);
+
+  this.loadLessons();
+}
 
   onSave(payload: LessonSaveRequest): void {
     const { request } = payload;
 
     this.saving.set(true);
 
-    if (this.isEditing() && this.selectedLesson()) {
-      const id = this.selectedLesson()!.id;
+    const selectedLesson = this.selectedLesson();
+
+    if (this.isEditing() && selectedLesson) {
+      const id = selectedLesson.id;
 
       const updateRequest = {
         topicId: request.topicId,
@@ -198,7 +323,6 @@ export class LessonPage implements OnInit {
         markdownContent: request.markdownContent,
         difficulty: request.difficulty,
         readingTimeMinutes: request.readingTimeMinutes,
-        displayOrder: request.displayOrder,
         isPublished: request.isPublished,
       };
 
@@ -236,9 +360,15 @@ export class LessonPage implements OnInit {
     this.isManagingResources.set(false);
     this.isManagingQuestions.set(false);
     this.saving.set(false);
-    this.selectedLesson.set(undefined);
+    this.lessonStore.setSelectedLesson(null);
     this.selectedLessonForTags.set(undefined);
     this.selectedLessonForResources.set(undefined);
     this.selectedLessonForQuestions.set(undefined);
+  }
+
+  onMove(lesson: LessonListResponse, direction: 'Up' | 'Down'): void {
+    this.lessonService.moveLesson(lesson.id, direction).subscribe({
+      next: () => this.loadLessons(this.search()),
+    });
   }
 }

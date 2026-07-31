@@ -16,10 +16,10 @@ export class LessonCard {
   delete = output<LessonListResponse>();
 
   lessonTags = output<LessonListResponse>();
-
   lessonResources = output<LessonListResponse>();
-
   practiceQuestions = output<LessonListResponse>();
+  moveUp = output<LessonListResponse>();
+  moveDown = output<LessonListResponse>();
 
   difficultyLabel(level: number): string {
     switch (level) {

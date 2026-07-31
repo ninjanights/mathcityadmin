@@ -37,4 +37,10 @@ export class PracticeQuestionPage implements OnInit {
       },
     });
   }
+
+  onMove(question: any, direction: 'Up' | 'Down'): void {
+    this.lessonService.movePracticeQuestion(question.id, direction).subscribe({
+      next: () => this.loadQuestions(),
+    });
+  }
 }

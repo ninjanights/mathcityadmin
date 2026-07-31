@@ -13,4 +13,6 @@ export class ChapterCard {
 
   edit = output<ChapterListResponse>();
   delete = output<ChapterListResponse>();
+  moveUp = output<ChapterListResponse>();
+  moveDown = output<ChapterListResponse>();
 }

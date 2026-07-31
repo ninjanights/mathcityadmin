@@ -5,7 +5,6 @@ export interface CreateSubjectRequest {
   description?: string;
   icon?: string;
   color: string;
-  displayOrder: number;
   isPublished: boolean;
 }
 

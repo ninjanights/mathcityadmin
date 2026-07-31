@@ -15,6 +15,8 @@ export class ChapterList {
 
   edit = output<ChapterListResponse>();
   delete = output<ChapterListResponse>();
+  moveUp = output<ChapterListResponse>();
+  moveDown = output<ChapterListResponse>();
 
   subjectName(subjectId: string): string {
     return this.subjects().find((subject) => subject.id === subjectId)?.name ?? 'Unknown subject';

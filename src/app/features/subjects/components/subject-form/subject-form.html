@@ -174,31 +174,7 @@
       </div>
     </div>
 
- <div>
-  <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
-    Display Order
-  </label>
 
-  <div class="flex flex-wrap gap-2">
-
-    @for (position of positions(); track position) {
-
-      <button
-        type="button"
-        (click)="form.controls.displayOrder.setValue(position)"
-        [class]="
-          form.controls.displayOrder.value === position
-            ? 'rounded-full bg-neutral-100 px-3 py-1.5 text-sm text-pink-400 transition dark:bg-[#313131]'
-            : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-100 dark:hover:bg-[#313131]'
-        "
-      >
-        {{ position }}
-      </button>
-
-    }
-
-  </div>
-</div>
 
     <!-- Actions -->
     <div class="flex justify-end gap-4 pt-8">

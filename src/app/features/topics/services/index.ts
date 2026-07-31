@@ -5,7 +5,6 @@ import { Endpoints } from '../../../core/api/endpoints';
 import { ApiResponse } from '../../auth/models/api-response';
 import {
   CreateTopicRequest,
-  MoveTopicRequest,
   TopicListResponse,
   TopicResponse,
   UpdateTopicRequest,
@@ -57,8 +56,8 @@ export class TopicService {
     return this.apiService.put<ApiResponse<TopicResponse>>(Endpoints.topics.update(id), request);
   }
 
-  moveTopic(id: string, request: MoveTopicRequest): Observable<void> {
-    return this.apiService.patch<void>(Endpoints.topics.move(id), request);
+  moveTopic(id: string, direction: 'Up' | 'Down'): Observable<void> {
+    return this.apiService.patch<void>(Endpoints.topics.move(id), { direction });
   }
 
   deleteTopic(id: string): Observable<void> {

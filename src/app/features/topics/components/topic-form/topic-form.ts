@@ -13,7 +13,6 @@ import { CreateTopicRequest, TopicResponse } from '../../models';
 export class TopicForm implements OnChanges {
   private readonly fb = inject(FormBuilder);
 
-  positions = input<number[]>([]);
   topic = input<TopicResponse>();
   chapters = input<ChapterListResponse[]>([]);
 
@@ -35,7 +34,6 @@ export class TopicForm implements OnChanges {
   form = this.fb.group({
     chapterId: ['', Validators.required],
     title: ['', [Validators.required, Validators.maxLength(200)]],
-    displayOrder: [1, [Validators.required, Validators.min(1)]],
   });
 
   ngOnChanges(): void {
@@ -47,7 +45,6 @@ export class TopicForm implements OnChanges {
       this.form.patchValue({
         chapterId: topic.chapterId,
         title: topic.title,
-        displayOrder: topic.displayOrder,
       });
 
       const idx = this.chapters().findIndex(
@@ -69,7 +66,6 @@ export class TopicForm implements OnChanges {
       this.form.patchValue({
         chapterId: firstChapter?.id ?? '',
         title: '',
-        displayOrder: this.positions().length + 1,
       });
     }
   }

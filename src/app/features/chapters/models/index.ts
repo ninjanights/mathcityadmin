@@ -2,13 +2,11 @@ export interface CreateChapterRequest {
   subjectId: string;
   title: string;
   description?: string;
-  displayOrder: number;
 }
 
 export interface UpdateChapterRequest {
   title: string;
   description?: string;
-  displayOrder: number;
 }
 
 export interface ChapterListResponse {

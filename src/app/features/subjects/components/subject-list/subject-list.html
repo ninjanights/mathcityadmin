@@ -5,7 +5,9 @@
         [subject]="subject"
         (edit)="edit.emit($event)"
         (delete)="delete.emit($event)"
-        (publish)="publish.emit($event)"> 
+        (publish)="publish.emit($event)"
+        (moveUp)="moveUp.emit($event)"
+        (moveDown)="moveDown.emit($event)"> 
       </app-subject-card>
     }
   </div>

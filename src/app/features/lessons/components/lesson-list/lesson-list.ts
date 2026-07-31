@@ -17,12 +17,11 @@ export class LessonList {
 
   edit = output<LessonListResponse>();
   delete = output<LessonListResponse>();
-
   lessonTags = output<LessonListResponse>();
-
   lessonResources = output<LessonListResponse>();
-
   practiceQuestions = output<LessonListResponse>();
+  moveUp = output<LessonListResponse>();
+  moveDown = output<LessonListResponse>();
 
   topicTitle(topicId: string): string {
     return this.topics().find((topic) => topic.id === topicId)?.title ?? 'Unknown topic';

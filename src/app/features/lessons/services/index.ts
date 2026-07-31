@@ -9,7 +9,6 @@ import {
   CreateLessonRequest,
   LessonListResponse,
   LessonResponse,
-  MoveLessonRequest,
   PagedResult,
   UpdateLessonRequest,
 } from '../models';
@@ -84,8 +83,12 @@ export class LessonService {
     );
   }
 
-  moveLesson(id: string, request: MoveLessonRequest): Observable<void> {
-    return this.apiService.patch<void>(Endpoints.lessons.move(id), request);
+  moveLesson(id: string, direction: 'Up' | 'Down'): Observable<void> {
+    return this.apiService.patch<void>(Endpoints.lessons.move(id), { direction });
+  }
+
+  movePracticeQuestion(id: string, direction: 'Up' | 'Down'): Observable<void> {
+    return this.apiService.patch<void>(Endpoints.lessons.movePracticeQuestion(id), { direction });
   }
 
   deleteLesson(id: string): Observable<void> {
@@ -111,5 +114,4 @@ export class LessonService {
   removeTagFromLesson(lessonId: string, tagId: string): Observable<void> {
     return this.apiService.delete<void>(Endpoints.lessons.removeTag(lessonId, tagId));
   }
-
 }

@@ -9,6 +9,7 @@ import {
   UpdateSubjectRequest,
 } from '../models';
 import { ApiResponse } from '../../auth/models/api-response';
+import { PagedResult } from '../../../shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -16,10 +17,28 @@ import { ApiResponse } from '../../auth/models/api-response';
 export class SubjectService {
   private readonly apiService = inject(ApiService);
 
-  getSubjects(search?: string): Observable<ApiResponse<SubjectListResponse[]>> {
-    const url = search ? `${Endpoints.subjects.list}?search=${search}`
-     : Endpoints.subjects.list;
-    return this.apiService.get<ApiResponse<SubjectListResponse[]>>(url);
+  getSubjects(query?: {
+    search?: string;
+    page?: number;
+    pageSize?: number;
+  }): Observable<ApiResponse<PagedResult<SubjectListResponse>>> {
+    const params = new URLSearchParams();
+
+    if (query?.search) {
+      params.set('search', query.search);
+    }
+    if (query?.page) {
+      params.set('page', query.page.toString());
+    }
+    if (query?.pageSize) {
+      params.set('pageSize', query.pageSize.toString());
+    }
+
+    const url = params.toString()
+      ? `${Endpoints.subjects.list}?${params.toString()}`
+      : Endpoints.subjects.list;
+
+    return this.apiService.get<ApiResponse<PagedResult<SubjectListResponse>>>(url);
   }
 
   getSubjectById(id: string): Observable<ApiResponse<SubjectResponse>> {
@@ -42,5 +61,9 @@ export class SubjectService {
 
   deleteSubject(id: string): Observable<void> {
     return this.apiService.delete<void>(Endpoints.subjects.delete(id));
+  }
+
+  moveSubject(id: string, direction: 'Up' | 'Down'): Observable<void> {
+    return this.apiService.patch<void>(Endpoints.subjects.move(id), { direction });
   }
 }

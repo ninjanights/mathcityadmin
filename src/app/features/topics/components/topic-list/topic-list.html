@@ -6,6 +6,8 @@
         [chapterTitle]="chapterTitle(topic.chapterId)"
         (edit)="edit.emit($event)"
         (delete)="delete.emit($event)"
+        (moveUp)="moveUp.emit($event)"
+        (moveDown)="moveDown.emit($event)"
       ></app-topic-card>
     }
   </div>

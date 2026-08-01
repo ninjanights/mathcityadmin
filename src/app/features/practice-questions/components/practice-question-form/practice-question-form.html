@@ -1,0 +1,118 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  class="space-y-5"
+>
+  <div>
+    <label>Question</label>
+
+    <textarea
+      rows="3"
+      formControlName="question"
+      class="w-full rounded border p-2"
+    ></textarea>
+  </div>
+
+  <div>
+    <label>Option A</label>
+
+    <input
+      class="w-full rounded border p-2"
+      formControlName="optionA"
+    />
+  </div>
+
+  <div>
+    <label>Option B</label>
+
+    <input
+      class="w-full rounded border p-2"
+      formControlName="optionB"
+    />
+  </div>
+
+  <div>
+    <label>Option C</label>
+
+    <input
+      class="w-full rounded border p-2"
+      formControlName="optionC"
+    />
+  </div>
+
+  <div>
+    <label>Option D</label>
+
+    <input
+      class="w-full rounded border p-2"
+      formControlName="optionD"
+    />
+  </div>
+
+  <div>
+    <label>Correct Answer</label>
+
+    <select
+      formControlName="correctAnswer"
+      class="w-full rounded border p-2"
+    >
+      <option [value]="1">A</option>
+      <option [value]="2">B</option>
+      <option [value]="3">C</option>
+      <option [value]="4">D</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Explanation</label>
+
+    <textarea
+      rows="4"
+      formControlName="explanation"
+      class="w-full rounded border p-2"
+    ></textarea>
+  </div>
+
+  <div>
+    <label>Difficulty</label>
+
+    <div class="flex gap-2 mt-2">
+      <button
+        type="button"
+        (click)="selectDifficulty(1)"
+      >
+        Beginner
+      </button>
+
+      <button
+        type="button"
+        (click)="selectDifficulty(2)"
+      >
+        Intermediate
+      </button>
+
+      <button
+        type="button"
+        (click)="selectDifficulty(3)"
+      >
+        Advanced
+      </button>
+    </div>
+  </div>
+
+  <div class="flex gap-3">
+    <button
+      type="submit"
+      [disabled]="saving()"
+    >
+      Save
+    </button>
+
+    <button
+      type="button"
+      (click)="cancel.emit()"
+    >
+      Cancel
+    </button>
+  </div>
+</form>

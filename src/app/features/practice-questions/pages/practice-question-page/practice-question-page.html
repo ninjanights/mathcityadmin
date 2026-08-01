@@ -1,64 +1,90 @@
-<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
-  <div class="mb-8 flex items-start justify-between gap-4">
-    <div>
-      <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Practice Questions</h2>
-      @if (lessonTitle) {
-        <p class="mt-1 text-sm text-neutral-500">{{ lessonTitle }}</p>
-      }
-    </div>
+<div class="space-y-6">
 
-    <button
-      type="button"
-      (click)="close.emit()"
-      class="rounded-full px-4 py-2 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-white"
-    >
-      Close
-    </button>
-  </div>
+  <!-- Header --> 
+  <app-practice-question-header
+    (create)="onCreate()"
+    (search)="onSearch($event)"
+    (sort)="onSort($event)"
+  />
 
-  <div class="rounded-2xl bg-neutral-100 p-4 dark:bg-[#313131]">
-    @if (loading()) {
-      <p class="text-sm text-neutral-500">Loading...</p>
-    } @else if (questions().length) {
-      <div class="flex flex-col gap-2">
-        @for (question of questions(); track $index) {
-          <div class="rounded-2xl bg-neutral-200 px-4 py-3 dark:bg-neutral-800">
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <h3 class="font-semibold text-neutral-900 dark:text-neutral-100">
-                  {{ $any(question).questionText || $any(question).title || 'Practice question' }}
-                </h3>
-                <p class="mt-1 text-xs text-neutral-500">
-                  {{ $any(question).difficulty || $any(question).questionType || 'Attached question' }}
-                </p>
-              </div>
-              <div class="flex items-center gap-3">
-                @if ($any(question).displayOrder) {
-                  <span class="font-mono text-xs text-neutral-400">#{{ $any(question).displayOrder }}</span>
-                }
-                <div class="flex items-center gap-1">
-                  <button
-                    type="button"
-                    (click)="onMove(question, 'Up')"
-                    class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
-                  >
-                    Up
-                  </button>
-                  <button
-                    type="button"
-                    (click)="onMove(question, 'Down')"
-                    class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
-                  >
-                    Down
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+  <!-- Subject Selector -->
+  <app-horizontal-selector
+    [items]="subjectItems()"
+    [selectedId]="subjectStore.selectedSubject()?.id ?? ''"
+    (selected)="onSubjectChange($event)"
+  />
+
+  <!-- Chapter Selector -->
+  <app-horizontal-selector
+    [items]="chapterItems()"
+    [selectedId]="chapterStore.selectedChapter()?.id ?? ''"
+    (selected)="onChapterChange($event)"
+  />
+
+  <!-- Topic Selector -->
+  <app-horizontal-selector
+    [items]="topicItems()"
+    [selectedId]="topicStore.selectedTopic()?.id ?? ''"
+    (selected)="onTopicChange($event)"
+  />
+
+  <!-- Lesson Selector -->
+  @if (lessons().length > 0) {
+
+    <app-horizontal-selector
+      [items]="lessonItems()"
+      [selectedId]="lessonStore.selectedLesson()?.id ?? ''"
+      (selected)="onLessonSelected($event)"
+    />
+
+  }
+
+  <!-- Practice Question Form -->
+  @if (isCreating() || isEditing()) {
+
+    <app-practice-question-form
+      [question]="selectedPracticeQuestion() ?? undefined"
+      [lessonId]="lessonStore.selectedLesson()?.id ?? ''"
+      [saving]="saving()"
+      (save)="onSave($event)"
+      (cancel)="onCancel()"
+    />
+
+  } @else {
+
+    <!-- Practice Question List -->
+
+    <app-practice-question-list
+      [practiceQuestions]="sortedPracticeQuestions()"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+      (moveUp)="onMove($event, 'Up')"
+      (moveDown)="onMove($event, 'Down')"
+    />
+
+    <!-- Pagination -->
+
+    @if (totalPages() > 1) {
+
+      <div class="flex items-center justify-center gap-2 pt-6">
+
+        @for (pageNumber of pageNumbers(); track pageNumber) {
+
+          <button
+            class="rounded-lg border px-3 py-2 transition"
+            [class.bg-neutral-900]="pageNumber === page()"
+            [class.text-white]="pageNumber === page()"
+            (click)="onPageChange(pageNumber)"
+          >
+            {{ pageNumber }}
+          </button>
+
         }
+
       </div>
-    } @else {
-      <p class="text-sm text-neutral-500">No practice questions attached.</p>
+
     }
-  </div>
+
+  }
+
 </div>

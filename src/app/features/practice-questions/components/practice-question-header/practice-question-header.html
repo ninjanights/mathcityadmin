@@ -1,0 +1,39 @@
+<div class="flex items-center justify-between gap-3">
+
+  <div class="flex items-center gap-2">
+
+    <input
+      type="text"
+      [(ngModel)]="query"
+      (ngModelChange)="search.emit(query)"
+      placeholder="Search question..."
+      class="rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+    />
+
+    <button
+      type="button"
+      (click)="setSort('asc')"
+      class="rounded-lg border px-3 py-2 text-sm"
+    >
+      A → Z
+    </button>
+
+    <button
+      type="button"
+      (click)="setSort('desc')"
+      class="rounded-lg border px-3 py-2 text-sm"
+    >
+      Z → A
+    </button>
+
+  </div>
+
+  <button
+    type="button"
+    (click)="create.emit()"
+    class="rounded-lg bg-neutral-900 px-4 py-2 text-white dark:bg-white dark:text-black"
+  >
+    New Question
+  </button>
+
+</div>

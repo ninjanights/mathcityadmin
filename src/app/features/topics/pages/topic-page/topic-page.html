@@ -6,20 +6,35 @@
     (cancel)="onCancel()"
   ></app-topic-form>
 } @else {
-  @if (loading()) {
-    <div class="flex items-center justify-center py-12">
-      <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">
-        Loading Topics...
-      </p>
-    </div>
-  } @else {
-    <div class="flex flex-col gap-2">
-      <app-topic-header
-        (create)="onCreate()"
-        (search)="onSearch($event)"
-        (sort)="onSort($event)"
-      ></app-topic-header>
+  <div class="flex flex-col gap-2">
 
+    <!-- Subject Selector -->
+    <app-horizontal-selector
+      [items]="subjectItems()"
+      [selectedId]="subjectStore.selectedSubject()?.id ?? null"
+      (selected)="onSubjectSelected($event)"
+    ></app-horizontal-selector>
+
+    <!-- Chapter Selector -->
+    <app-horizontal-selector
+      [items]="chapterItems()"
+      [selectedId]="chapterStore.selectedChapter()?.id ?? null"
+      (selected)="onChapterSelected($event)"
+    ></app-horizontal-selector>
+
+    <app-topic-header
+      (create)="onCreate()"
+      (search)="onSearch($event)"
+      (sort)="onSort($event)"
+    ></app-topic-header>
+
+    @if (loading()) {
+      <div class="flex items-center justify-center py-12">
+        <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">
+          Loading Topics...
+        </p>
+      </div>
+    } @else {
       <app-topic-list
         [topics]="sortedTopics()"
         [chapters]="chapters()"
@@ -70,6 +85,6 @@
           </div>
         </div>
       }
-    </div>
-  }
+    }
+  </div>
 }

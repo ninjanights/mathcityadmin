@@ -69,4 +69,24 @@ export const Endpoints = {
     delete: (id: string) => `/api/lessonresources/${id}`,
     move: (id: string) => `/api/lessonresources/${id}/move`,
   },
+practiceQuestions: {
+  list: '/practicequestions',
+  create: '/practicequestions',
+
+  getById: (id: string) => `/practicequestions/${id}`,
+
+  update: (id: string) => `/practicequestions/${id}`,
+
+  delete: (id: string) => `/practicequestions/${id}`,
+
+  move: (id: string) => `/practicequestions/${id}/move`,
+
+  submit: '/practicequestions/submit',
+
+  byLesson: (lessonId: string) =>
+    `/practicequestions/lesson/${lessonId}`,
+},
+
+
+
 };

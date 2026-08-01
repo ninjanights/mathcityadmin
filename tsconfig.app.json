@@ -9,7 +9,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/features/practice-questions/components/practice-question-header"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

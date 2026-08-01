@@ -11,20 +11,23 @@ import { TopicStore } from '../../../../shared/stores/topic.store';
 import { SubjectStore } from '../../../../shared/stores/subject.store';
 import { ChapterStore } from '../../../../shared/stores/chapter.store';
 import { SubjectService } from '../../../subjects/services';
-
+import {
+  HorizontalSelector,
+  HorizontalSelectorItem,
+} from '../../../../shared/components/horizontal-selector/horizontal-selector';
 
 @Component({
   selector: 'app-topic-page',
   standalone: true,
-  imports: [CommonModule, TopicHeader, TopicList, TopicForm],
+  imports: [CommonModule, TopicHeader, TopicList, TopicForm, HorizontalSelector],
   templateUrl: './topic-page.html',
 })
 export class TopicPage implements OnInit {
   private readonly topicService = inject(TopicService);
   private readonly chapterService = inject(ChapterService);
   private readonly subjectService = inject(SubjectService);
-private readonly subjectStore = inject(SubjectStore);
-private readonly chapterStore = inject(ChapterStore);
+protected readonly subjectStore = inject(SubjectStore);
+protected readonly chapterStore = inject(ChapterStore);
 private readonly topicStore = inject(TopicStore);
 
 page = signal(1);
@@ -42,6 +45,17 @@ chapters = this.chapterStore.chapters;
   isCreating = signal(false);
   isEditing = signal(false);
   selectedTopic = signal<TopicResponse | undefined>(undefined);
+
+  chapterItems = computed(() =>
+    this.chapters().map((chapter) => ({
+      id: chapter.id,
+      label: chapter.title,
+    }))
+  );
+
+  subjectItems = computed<HorizontalSelectorItem[]>(() =>
+    this.subjects().map(x => ({ id: x.id, label: x.name }))
+  );
 
  sortedTopics = computed(() => {
   const order = this.sortOrder();
@@ -173,6 +187,22 @@ if (response.data.items.length > 0) {
         this.isCreating.set(false);
       },
     });
+  }
+
+  onSubjectSelected(item: HorizontalSelectorItem): void {
+    const subject = this.subjects().find(x => x.id === item.id);
+    if (!subject) return;
+    this.subjectStore.selectedSubject.set(subject);
+    this.page.set(1);
+    this.loadChapters();
+  }
+
+  onChapterSelected(item: HorizontalSelectorItem): void {
+    const chapter = this.chapters().find((c) => c.id === item.id);
+    if (!chapter) return;
+    this.chapterStore.selectedChapter.set(chapter);
+    this.page.set(1);
+    this.loadTopics(this.search());
   }
 
   onChapterChange(chapter: ChapterListResponse) {

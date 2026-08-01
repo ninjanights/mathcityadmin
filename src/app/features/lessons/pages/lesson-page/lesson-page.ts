@@ -20,6 +20,10 @@ import { SubjectService } from '../../../subjects/services';
 import { ChapterService } from '../../../chapters/services';
 import { ChapterListResponse } from '../../../chapters/models';
 import { SubjectListResponse } from '../../../subjects/models';
+import {
+  HorizontalSelector,
+  HorizontalSelectorItem,
+} from '../../../../shared/components/horizontal-selector/horizontal-selector';
 
 @Component({
   selector: 'app-lesson-page',
@@ -32,6 +36,7 @@ import { SubjectListResponse } from '../../../subjects/models';
     LessonTagPage,
     LessonResourcePage,
     PracticeQuestionPage,
+    HorizontalSelector,
   ],
   templateUrl: './lesson-page.html',
 })
@@ -42,10 +47,10 @@ export class LessonPage implements OnInit {
   private readonly chapterService = inject(ChapterService);
   private readonly topicService = inject(TopicService);
 
-  private readonly subjectStore = inject(SubjectStore);
-  private readonly chapterStore = inject(ChapterStore);
-  private readonly topicStore = inject(TopicStore);
-  private readonly lessonStore = inject(LessonStore);
+  protected readonly subjectStore = inject(SubjectStore);
+  protected readonly chapterStore = inject(ChapterStore);
+  protected readonly topicStore = inject(TopicStore);
+  protected readonly lessonStore = inject(LessonStore);
 
   subjects = this.subjectStore.subjects;
   chapters = this.chapterStore.chapters;
@@ -95,6 +100,17 @@ export class LessonPage implements OnInit {
     Array.from({ length: this.totalPages() }, (_, i) => i + 1),
   );
 
+  subjectItems = computed<HorizontalSelectorItem[]>(() =>
+    this.subjects().map(x => ({ id: x.id, label: x.name }))
+  );
+
+  chapterItems = computed<HorizontalSelectorItem[]>(() =>
+    this.chapters().map(x => ({ id: x.id, label: x.title }))
+  );
+
+  topicItems = computed<HorizontalSelectorItem[]>(() =>
+    this.topics().map(x => ({ id: x.id, label: x.title }))
+  );
 
   ngOnInit(): void {
     if (this.subjectStore.subjects().length === 0) {
@@ -287,24 +303,27 @@ this.loadLessons(this.search());
       });
     }
   }
-  onSubjectChange(subject: SubjectListResponse) {
-  this.subjectStore.selectedSubject.set(subject);
-  this.page.set(1);
-
-  this.loadChapters();
-}
-onChapterChange(chapter: ChapterListResponse) {
-  this.chapterStore.selectedChapter.set(chapter);
-  this.page.set(1);
-
-  this.loadTopics();
-}
-onTopicChange(topic: TopicListResponse) {
-  this.topicStore.selectedTopic.set(topic);
-  this.page.set(1);
-
-  this.loadLessons();
-}
+  onSubjectChange(item: HorizontalSelectorItem) {
+    const subject = this.subjects().find(x => x.id === item.id);
+    if (!subject) return;
+    this.subjectStore.selectedSubject.set(subject);
+    this.page.set(1);
+    this.loadChapters();
+  }
+  onChapterChange(item: HorizontalSelectorItem) {
+    const chapter = this.chapters().find(x => x.id === item.id);
+    if (!chapter) return;
+    this.chapterStore.selectedChapter.set(chapter);
+    this.page.set(1);
+    this.loadTopics();
+  }
+  onTopicChange(item: HorizontalSelectorItem) {
+    const topic = this.topics().find(x => x.id === item.id);
+    if (!topic) return;
+    this.topicStore.selectedTopic.set(topic);
+    this.page.set(1);
+    this.loadLessons();
+  }
 
   onSave(payload: LessonSaveRequest): void {
     const { request } = payload;

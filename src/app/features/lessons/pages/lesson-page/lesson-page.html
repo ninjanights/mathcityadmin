@@ -22,13 +22,34 @@
 />
 } @else if (isManagingQuestions() && selectedLessonForQuestions()) {
 <app-practice-question-page
-  [lessonId]="selectedLessonForQuestions()!.id"
-  [lessonTitle]="selectedLessonForQuestions()!.title"
-  (close)="onCancel()"
+  [lesson]="selectedLessonForQuestions()!"
+    (close)="onCancel()"
 />
 } @else {
 
 <div class="space-y-6">
+
+  <!-- Subject Selector -->
+  <app-horizontal-selector
+    [items]="subjectItems()"
+    [selectedId]="subjectStore.selectedSubject()?.id ?? ''"
+    (selected)="onSubjectChange($event)"
+  />
+
+  <!-- Chapter Selector -->
+  <app-horizontal-selector
+    [items]="chapterItems()"
+    [selectedId]="chapterStore.selectedChapter()?.id ?? ''"
+    (selected)="onChapterChange($event)"
+  />
+
+  <!-- Topic Selector -->
+  <app-horizontal-selector
+    [items]="topicItems()"
+    [selectedId]="topicStore.selectedTopic()?.id ?? ''"
+    (selected)="onTopicChange($event)"
+  />
+
   <app-lesson-header
     (create)="onCreate()"
     (search)="onSearch($event)"

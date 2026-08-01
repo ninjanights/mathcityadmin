@@ -1,6 +1,5 @@
 <div class="space-y-6">
-
-  <!-- Header --> 
+  <!-- Header -->
   <app-practice-question-header
     (create)="onCreate()"
     (search)="onSearch($event)"
@@ -30,18 +29,15 @@
 
   <!-- Lesson Selector -->
   @if (lessons().length > 0) {
-
     <app-horizontal-selector
       [items]="lessonItems()"
       [selectedId]="lessonStore.selectedLesson()?.id ?? ''"
       (selected)="onLessonSelected($event)"
     />
-
   }
 
   <!-- Practice Question Form -->
   @if (isCreating() || isEditing()) {
-
     <app-practice-question-form
       [question]="selectedPracticeQuestion() ?? undefined"
       [lessonId]="lessonStore.selectedLesson()?.id ?? ''"
@@ -49,9 +45,7 @@
       (save)="onSave($event)"
       (cancel)="onCancel()"
     />
-
   } @else {
-
     <!-- Practice Question List -->
 
     <app-practice-question-list
@@ -65,11 +59,8 @@
     <!-- Pagination -->
 
     @if (totalPages() > 1) {
-
       <div class="flex items-center justify-center gap-2 pt-6">
-
         @for (pageNumber of pageNumbers(); track pageNumber) {
-
           <button
             class="rounded-lg border px-3 py-2 transition"
             [class.bg-neutral-900]="pageNumber === page()"
@@ -78,13 +69,8 @@
           >
             {{ pageNumber }}
           </button>
-
         }
-
       </div>
-
     }
-
   }
-
 </div>

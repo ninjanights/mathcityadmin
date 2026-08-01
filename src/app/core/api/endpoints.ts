@@ -70,21 +70,21 @@ export const Endpoints = {
     move: (id: string) => `/api/lessonresources/${id}/move`,
   },
 practiceQuestions: {
-  list: '/practicequestions',
-  create: '/practicequestions',
+  list: '/api/practicequestions',
+  create: '/api/practicequestions',
 
-  getById: (id: string) => `/practicequestions/${id}`,
+  getById: (id: string) => `/api/practicequestions/${id}`,
 
-  update: (id: string) => `/practicequestions/${id}`,
+  update: (id: string) => `/api/practicequestions/${id}`,
 
-  delete: (id: string) => `/practicequestions/${id}`,
+  delete: (id: string) => `/api/practicequestions/${id}`,
 
-  move: (id: string) => `/practicequestions/${id}/move`,
+  move: (id: string) => `/api/practicequestions/${id}/move`,
 
-  submit: '/practicequestions/submit',
+  submit: '/api/practicequestions/submit',
 
   byLesson: (lessonId: string) =>
-    `/practicequestions/lesson/${lessonId}`,
+    `/api/practicequestions/lesson/${lessonId}`,
 },
 
 

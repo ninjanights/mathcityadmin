@@ -220,6 +220,8 @@ topicItems = computed<HorizontalSelectorItem[]>(() =>
       })
       .subscribe({
         next: (response) => {
+
+          console.log(response, "45");
           const result = response.data;
 
           this.practiceQuestionStore.setPracticeQuestions(result.items);
@@ -301,6 +303,8 @@ topicItems = computed<HorizontalSelectorItem[]>(() =>
   onEdit(question: PracticeQuestionListResponse): void {
     this.practiceQuestionService.getPracticeQuestionById(question.id).subscribe({
       next: (response) => {
+
+        console.log(response, "id---");
         this.practiceQuestionStore.setSelectedPracticeQuestion(response.data);
         this.isEditing.set(true);
         this.isCreating.set(false);

@@ -1,3 +1,4 @@
+import { PagedResult } from '../../chapters/models';
 export enum ResourceType {
   Text = 1,
   Pdf = 2,
@@ -5,9 +6,29 @@ export enum ResourceType {
 
 export interface LessonResourceListResponse {
   id: string;
+
   title: string;
-  resourceType: ResourceType;
-  description: string;
+
+  resourceType: number;
+
+  description?: string;
+
+  displayOrder: number;
+}
+
+export interface LessonResourceResponse {
+  id: string;
+
+  lessonId: string;
+
+  title: string;
+
+  url: string;
+
+  description?: string;
+
+  resourceType:   ResourceType;
+
   displayOrder: number;
 }
 
@@ -15,13 +36,31 @@ export interface CreateLessonResourceRequest {
   lessonId: string;
   title: string;
   resourceType: ResourceType;
-  displayOrder: number;
   description: string;
 }
 
 export interface UpdateLessonResourceRequest {
   title: string;
-  resourceType: ResourceType;
-  displayOrder: number;
+
   description: string;
+
+  resourceType: ResourceType;
 }
+
+export interface MoveLessonResourceRequest {
+  direction: 'Up' | 'Down';
+}
+
+export interface LessonResourceQuery {
+  lessonSlug?: string;
+
+  search?: string;
+
+  resourceType?: ResourceType;
+
+  page?: number;
+
+  pageSize?: number;
+}
+
+export type LessonResourcePagedResult = PagedResult<LessonResourceListResponse>;

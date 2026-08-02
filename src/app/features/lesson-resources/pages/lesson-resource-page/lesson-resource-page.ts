@@ -20,8 +20,12 @@ export class LessonResourcePage implements OnInit {
 
   @Input() lessonId = '';
   @Input() lessonTitle = '';
-  close = output<void>();
+  @Input() lessonSlug = '';
 
+  close = output<void>();
+  page = signal(1);
+  pageSize = signal(5);
+  totalCount = signal(0);
   lessons = signal<LessonListResponse[]>([]);
   loading = signal(false);
   loadingLessons = signal(false);
@@ -34,7 +38,7 @@ export class LessonResourcePage implements OnInit {
   selectedLessonTitle = signal('');
   hasSelectedLesson = computed(() => Boolean(this.selectedLessonId()));
   isPdfResource = computed(() => this.form.controls.resourceType.value === ResourceType.Pdf);
-
+selectedLessonSlug = signal('');
   resourceTypes = [
     { label: 'Text', value: ResourceType.Text },
     { label: 'PDF', value: ResourceType.Pdf, accept: 'application/pdf' },
@@ -52,15 +56,14 @@ export class LessonResourcePage implements OnInit {
   }
 
   selectedAccept(): string {
-    return (
-      'application/pdf'
-    );
+    return 'application/pdf';
   }
 
   ngOnInit(): void {
     if (this.lessonId) {
       this.selectedLessonId.set(this.lessonId);
       this.selectedLessonTitle.set(this.lessonTitle);
+      this.selectedLessonSlug.set(this.lessonSlug);
       this.loadResources();
       return;
     }
@@ -86,11 +89,12 @@ export class LessonResourcePage implements OnInit {
   selectLesson(lesson: LessonListResponse): void {
     this.selectedLessonId.set(lesson.id);
     this.selectedLessonTitle.set(lesson.title);
+    this.selectedLessonSlug.set(lesson.slug);
     this.clearFile();
     this.resources.set([]);
     this.form.patchValue({
       title: '',
-        description: '',
+      description: '',
       resourceType: ResourceType.Text,
       displayOrder: 1,
     });
@@ -98,23 +102,32 @@ export class LessonResourcePage implements OnInit {
   }
 
   loadResources(): void {
-    if (!this.selectedLessonId()) {
+    if (!this.lessonSlug) {
       return;
     }
-
     this.loading.set(true);
 
-    this.lessonResourceService.getByLesson(this.selectedLessonId()).subscribe({
-      next: (response) => {
-        this.resources.set(response.data ?? []);
-        this.form.controls.displayOrder.setValue((response.data?.length ?? 0) + 1);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.resources.set([]);
-        this.loading.set(false);
-      },
-    });
+    this.lessonResourceService
+      .getLessonResources({
+        lessonSlug: this.selectedLessonSlug(),
+        page: this.page(),
+        pageSize: this.pageSize(),
+      })
+      .subscribe({
+        next: (response) => {
+
+          console.log(response, "---resource---");
+          this.resources.set(response.data.items ?? []);
+          this.totalCount.set(response.data.totalCount);
+          this.form.controls.displayOrder.setValue(response.data.items.length + 1);
+          this.loading.set(false);
+        },
+
+        error: () => {
+          this.resources.set([]);
+          this.loading.set(false);
+        },
+      });
   }
 
   selectResourceType(type: ResourceType): void {
@@ -163,22 +176,22 @@ export class LessonResourcePage implements OnInit {
 
     this.saving.set(true);
 
-    this.lessonResourceService
-      .create(
-        {
-          lessonId: this.selectedLessonId(),
-          title: this.form.controls.title.value ?? '',
-          resourceType: Number(this.form.controls.resourceType.value) as ResourceType,
-          displayOrder: Number(this.form.controls.displayOrder.value),
-          description: this.form.controls.description.value ?? ""
-        },
-        file,
-      )
+    this.lessonResourceService.createLessonResource(
+{
+  lessonId: this.selectedLessonId(),
+  title: this.form.controls.title.value ?? '',
+  resourceType:
+    Number(this.form.controls.resourceType.value) as ResourceType,
+  description:
+    this.form.controls.description.value ?? ''
+},
+file
+)
       .subscribe({
         next: () => {
           this.form.patchValue({
             title: '',
-              description: '',
+            description: '',
             resourceType: ResourceType.Text,
           });
           this.clearFile();
@@ -197,7 +210,7 @@ export class LessonResourcePage implements OnInit {
       return;
     }
 
-    this.lessonResourceService.delete(resource.id).subscribe({
+    this.lessonResourceService.deleteLessonResource(resource.id).subscribe({
       next: () => this.loadResources(),
     });
   }

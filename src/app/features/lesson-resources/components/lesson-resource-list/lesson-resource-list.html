@@ -1,0 +1,42 @@
+<div class="flex flex-col gap-2">
+  @for (resource of resources(); track resource.id) {
+    <div class="rounded-2xl bg-neutral-200 px-4 py-3 dark:bg-neutral-800">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h3 class="font-semibold text-neutral-900 dark:text-neutral-100">
+            {{ resource.title }}
+          </h3>
+          <p class="mt-1 text-xs text-neutral-500">
+            {{ resourceTypeLabel(resource.resourceType) }} · #{{ resource.displayOrder }}
+          </p>
+          @if (resource.description) {
+            <p class="mt-1 text-xs text-neutral-500">{{ resource.description }}</p>
+          }
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            (click)="view.emit(resource)"
+            class="text-sm text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-100"
+          >
+            View
+          </button>
+          <button
+            type="button"
+            (click)="edit.emit(resource)"
+            class="text-sm text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-100"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            (click)="delete.emit(resource)"
+            class="text-sm text-red-500 transition hover:text-red-400"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

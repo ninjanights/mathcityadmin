@@ -18,6 +18,7 @@
 <app-lesson-resource-page
   [lessonId]="selectedLessonForResources()!.id"
   [lessonTitle]="selectedLessonForResources()!.title"
+  [lessonSlug]="selectedLessonForResources()!.slug"
   (close)="onCancel()"
 />
 } @else if (isManagingQuestions() && selectedLessonForQuestions()) {

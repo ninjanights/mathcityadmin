@@ -9,7 +9,7 @@ export interface LessonResourceListResponse {
 
   title: string;
 
-  resourceType: number;
+  resourceType: ResourceType | 'Text' | 'Pdf';
 
   description?: string;
 

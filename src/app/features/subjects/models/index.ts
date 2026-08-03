@@ -22,10 +22,17 @@ export interface SubjectListResponse {
   id: string;
   name: string;
   slug: string;
-  icon?: string;
+  icon: string;
   color: string;
-  description?: string;
+  description: string;
+  displayOrder: number;
   isPublished: boolean;
+
+  chapterCount: number;
+  topicCount: number;
+  lessonCount: number;
+  lessonResourceCount: number;
+  practiceQuestionCount: number;
 }
 
 export interface SubjectResponse {

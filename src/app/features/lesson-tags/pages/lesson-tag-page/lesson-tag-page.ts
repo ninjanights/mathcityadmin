@@ -41,13 +41,18 @@ export class LessonTagPage implements OnInit {
     });
   }
 
-  loadTags() {
-    this.tagService.getTags().subscribe({
+  loadTags(): void {
+  this.tagService
+    .getTags({
+      page: 1,
+      pageSize: 1000,
+    })
+    .subscribe({
       next: (res) => {
-        this.availableTags.set(res.data);
+        this.availableTags.set(res.data.items);
       },
     });
-  }
+}
 
   selectTag(tagId: string) {
     this.selectedTagId.set(tagId);

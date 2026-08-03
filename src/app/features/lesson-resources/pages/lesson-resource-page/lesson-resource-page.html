@@ -7,13 +7,23 @@
       }
     </div>
 
-    <button
-      type="button"
-      (click)="close.emit()"
-      class="rounded-full px-4 py-2 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-white"
-    >
-      Close
-    </button>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="onCreate()"
+        [disabled]="!hasSelectedLesson()"
+        class="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-300"
+      >
+        Add Resource
+      </button>
+      <button
+        type="button"
+        (click)="close.emit()"
+        class="rounded-full px-4 py-2 text-sm font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-white"
+      >
+        Close
+      </button>
+    </div>
   </div>
 
   <div class="space-y-6 rounded-2xl bg-neutral-100 p-4 dark:bg-[#313131]">
@@ -40,6 +50,7 @@
       />
     }
 
+    @if (isCreating() || isEditing()) {
     <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
       <div>
         <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
@@ -113,27 +124,6 @@
       </div>
       }
 
-      <div>
-        <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">
-          Display Order
-        </label>
-        <div class="flex flex-wrap gap-2">
-          @for (position of positions(); track position) {
-            <button
-              type="button"
-              (click)="form.controls.displayOrder.setValue(position)"
-              [class]="
-                form.controls.displayOrder.value === position
-                  ? 'rounded-full bg-neutral-300 px-3 py-1.5 text-sm font-semibold text-neutral-900 transition dark:bg-neutral-700 dark:text-neutral-100'
-                  : 'rounded-full px-3 py-1.5 text-sm text-neutral-500 transition hover:bg-neutral-200 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
-              "
-            >
-              {{ position }}
-            </button>
-          }
-        </div>
-      </div>
-
       <div class="flex justify-end gap-3">
         @if (selectedResource()) {
           <button
@@ -153,6 +143,7 @@
         </button>
       </div>
     </form>
+    }
 
     <div>
       <h3 class="mb-3 text-sm font-medium text-neutral-500">Attached Resources</h3>

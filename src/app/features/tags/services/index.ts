@@ -4,19 +4,41 @@ import { ApiService } from '../../../core/api/api.service';
 import { Endpoints } from '../../../core/api/endpoints';
 import { ApiResponse } from '../../auth/models/api-response';
 import { CreateTagRequest, TagListResponse, TagResponse, UpdateTagRequest } from '../models';
+import { PagedResult } from '../../../shared/models';
 
+export interface TagQuery {
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export type TagPagedResult = PagedResult<TagListResponse>;
 @Injectable({
   providedIn: 'root',
 })
 export class TagService {
   private readonly apiService = inject(ApiService);
 
-  getTags(search?: string): Observable<ApiResponse<TagListResponse[]>> {
-    const url = search
-      ? `${Endpoints.tags.list}?search=${encodeURIComponent(search)}`
+  getTags(query?: TagQuery): Observable<ApiResponse<TagPagedResult>> {
+    const params = new URLSearchParams();
+
+    if (query?.search) {
+      params.set('search', query.search);
+    }
+
+    if (query?.page) {
+      params.set('page', query.page.toString());
+    }
+
+    if (query?.pageSize) {
+      params.set('pageSize', query.pageSize.toString());
+    }
+
+    const url = params.toString()
+      ? `${Endpoints.tags.list}?${params.toString()}`
       : Endpoints.tags.list;
 
-    return this.apiService.get<ApiResponse<TagListResponse[]>>(url);
+    return this.apiService.get<ApiResponse<TagPagedResult>>(url);
   }
 
   getTagById(id: string): Observable<ApiResponse<TagResponse>> {

@@ -57,6 +57,8 @@ export class LessonResourcePage implements OnInit {
   loading = signal(false);
   loadingLessons = signal(false);
   saving = signal(false);
+  isCreating = signal(false);
+  isEditing = signal(false);
   resources = signal<LessonResourceListResponse[]>([]);
   selectedResource = signal<LessonResourceResponse | null>(null);
   selectedFile = signal<File | undefined>(undefined);
@@ -89,12 +91,7 @@ selectedLessonSlug = signal('');
     title: ['', Validators.required],
     description: [''],
     resourceType: [ResourceType.Text, Validators.required],
-    displayOrder: [1, [Validators.required, Validators.min(1)]],
   });
-
-  positions(): number[] {
-    return Array.from({ length: this.resources().length + 1 }, (_, i) => i + 1);
-  }
 
   selectedAccept(): string {
     return 'application/pdf';
@@ -158,8 +155,9 @@ selectedLessonSlug = signal('');
       title: '',
       description: '',
       resourceType: ResourceType.Text,
-      displayOrder: 1,
     });
+    this.isCreating.set(false);
+    this.isEditing.set(false);
     this.loadResources();
   }
 
@@ -257,7 +255,6 @@ selectedLessonSlug = signal('');
 
           this.resources.set(resources);
           this.totalCount.set(result.totalCount ?? resources.length);
-          this.form.controls.displayOrder.setValue(resources.length + 1);
           this.loading.set(false);
         },
 
@@ -271,6 +268,11 @@ selectedLessonSlug = signal('');
   selectResourceType(type: ResourceType): void {
     this.form.controls.resourceType.setValue(type);
     this.clearFile();
+  }
+
+  onCreate(): void {
+    this.resetForm();
+    this.isCreating.set(true);
   }
 
   onFileSelected(event: Event): void {
@@ -358,7 +360,9 @@ file
   viewResource(resource: LessonResourceListResponse): void {
     this.lessonResourceService.getLessonResourceById(resource.id).subscribe({
       next: (response) => {
+      
         const url = response.data?.url;
+        console.log(url, "45");
         if (url) window.open(url, '_blank', 'noopener');
       },
     });
@@ -377,6 +381,8 @@ file
           resourceType: selectedResource.resourceType,
         });
         this.clearFile();
+        this.isEditing.set(true);
+        this.isCreating.set(false);
       },
     });
   }
@@ -387,11 +393,12 @@ file
 
   private resetForm(): void {
     this.selectedResource.set(null);
+    this.isCreating.set(false);
+    this.isEditing.set(false);
     this.form.patchValue({
       title: '',
       description: '',
       resourceType: ResourceType.Text,
-      displayOrder: this.resources().length + 1,
     });
     this.clearFile();
   }

@@ -1,3 +1,4 @@
+
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TagForm, TagHeader, TagList } from '../../components';
@@ -5,8 +6,10 @@ import { TagService } from '../../services';
 import {
   CreateTagRequest,
   TagListResponse,
+  TagPagedResult,
+  TagQuery,
   TagResponse,
-} from '../../models';
+  UpdateTagRequest } from './../../models/index';
 
 @Component({
   selector: 'app-tag-page',
@@ -19,7 +22,10 @@ export class TagPage implements OnInit {
 
   tags = signal<TagListResponse[]>([]);
   loading = signal(false);
-
+page = signal(1);
+pageSize = signal(10);
+totalCount = signal(0);
+search = signal('');
   sortOrder = signal('title-asc');
   isCreating = signal(false);
   isEditing = signal(false);
@@ -44,24 +50,32 @@ export class TagPage implements OnInit {
   ngOnInit(): void {
     this.loadTags();
   }
+loadTags(): void {
+  this.loading.set(true);
 
-  loadTags(search?: string): void {
-    this.loading.set(true);
+  const query: TagQuery = {
+    search: this.search(),
+    page: this.page(),
+    pageSize: this.pageSize(),
+  };
 
-    this.tagService.getTags(search).subscribe({
-      next: (response) => {
-        this.tags.set(response.data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
-  }
+  this.tagService.getTags(query).subscribe({
+    next: (response) => {
+      this.tags.set(response.data.items);
+      this.totalCount.set(response.data.totalCount);
+      this.loading.set(false);
+    },
+    error: () => {
+      this.loading.set(false);
+    },
+  });
+}
 
   onSearch(query: string): void {
-    this.loadTags(query);
-  }
+  this.search.set(query);
+  this.page.set(1);
+  this.loadTags();
+}
 
   onSort(order: string): void {
     this.sortOrder.set(order);

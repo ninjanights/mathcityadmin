@@ -18,17 +18,11 @@ export interface LessonResourceListResponse {
 
 export interface LessonResourceResponse {
   id: string;
-
   lessonId: string;
-
   title: string;
-
   url: string;
-
   description?: string;
-
   resourceType:   ResourceType;
-
   displayOrder: number;
 }
 

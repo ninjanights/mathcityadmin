@@ -1,76 +1,21 @@
-<div class="space-y-6">
-  <!-- Header -->
-  <app-practice-question-header
-    (create)="onCreate()"
-    (search)="onSearch($event)"
-    (sort)="onSort($event)"
-  />
-
-  <!-- Subject Selector -->
-  <app-horizontal-selector
-    [items]="subjectItems()"
-    [selectedId]="subjectStore.selectedSubject()?.id ?? ''"
-    (selected)="onSubjectChange($event)"
-  />
-
-  <!-- Chapter Selector -->
-  <app-horizontal-selector
-    [items]="chapterItems()"
-    [selectedId]="chapterStore.selectedChapter()?.id ?? ''"
-    (selected)="onChapterChange($event)"
-  />
-
-  <!-- Topic Selector -->
-  <app-horizontal-selector
-    [items]="topicItems()"
-    [selectedId]="topicStore.selectedTopic()?.id ?? ''"
-    (selected)="onTopicChange($event)"
-  />
-
-  <!-- Lesson Selector -->
-  @if (lessons().length > 0) {
-    <app-horizontal-selector
-      [items]="lessonItems()"
-      [selectedId]="lessonStore.selectedLesson()?.id ?? ''"
-      (selected)="onLessonSelected($event)"
-    />
-  }
-
-  <!-- Practice Question Form -->
-  @if (isCreating() || isEditing()) {
-    <app-practice-question-form
-      [question]="selectedPracticeQuestion() ?? undefined"
-      [lessonId]="lessonStore.selectedLesson()?.id ?? ''"
-      [saving]="saving()"
-      (save)="onSave($event)"
-      (cancel)="onCancel()"
-    />
-  } @else {
-    <!-- Practice Question List -->
-
-    <app-practice-question-list
-      [practiceQuestions]="sortedPracticeQuestions()"
-      (edit)="onEdit($event)"
-      (delete)="onDelete($event)"
-      (moveUp)="onMove($event, 'Up')"
-      (moveDown)="onMove($event, 'Down')"
-    />
-
-    <!-- Pagination -->
-
+@if (isCreating() || isEditing()) {
+  <app-practice-question-form [question]="selectedPracticeQuestion() ?? undefined" [lessonId]="lessonStore.selectedLesson()?.id ?? ''" [saving]="saving()" (save)="onSave($event)" (cancel)="onCancel()" />
+} @else {
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2">
+      <app-horizontal-selector [items]="subjectItems()" [selectedId]="subjectStore.selectedSubject()?.id ?? ''" (selected)="onSubjectChange($event)" />
+      <app-horizontal-selector [items]="chapterItems()" [selectedId]="chapterStore.selectedChapter()?.id ?? ''" (selected)="onChapterChange($event)" />
+      <app-horizontal-selector [items]="topicItems()" [selectedId]="topicStore.selectedTopic()?.id ?? ''" (selected)="onTopicChange($event)" />
+      @if (lessons().length > 0) { <app-horizontal-selector [items]="lessonItems()" [selectedId]="lessonStore.selectedLesson()?.id ?? ''" (selected)="onLessonSelected($event)" /> }
+    </div>
+    <app-practice-question-header (create)="onCreate()" (search)="onSearch($event)" (sort)="onSort($event)" />
+    @if (loading()) { <div class="flex min-h-40 items-center justify-center"><p class="font-semibold text-neutral-500 animate-pulse dark:text-neutral-400">Loading, please wait.</p></div> } @else { <app-practice-question-list [practiceQuestions]="sortedPracticeQuestions()" (edit)="onEdit($event)" (delete)="onDelete($event)" (moveUp)="onMove($event, 'Up')" (moveDown)="onMove($event, 'Down')" /> }
     @if (totalPages() > 1) {
-      <div class="flex items-center justify-center gap-2 pt-6">
-        @for (pageNumber of pageNumbers(); track pageNumber) {
-          <button
-            class="rounded-lg border px-3 py-2 transition"
-            [class.bg-neutral-900]="pageNumber === page()"
-            [class.text-white]="pageNumber === page()"
-            (click)="onPageChange(pageNumber)"
-          >
-            {{ pageNumber }}
-          </button>
-        }
+      <div class="flex items-center justify-center gap-1 pt-3">
+        <button type="button" (click)="onPageChange(page() - 1)" [disabled]="page() <= 1" aria-label="Previous page" class="flex h-7 w-7 items-center justify-center rounded-full text-neutral-500 disabled:pointer-events-none disabled:opacity-30"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-4 w-4" aria-hidden="true"><path d="m15 19-7-7 7-7" /></svg></button>
+        @for (pageNumber of pageNumbers(); track pageNumber) { <button type="button" [class]="pageNumber === page() ? 'flex h-7 min-w-7 items-center justify-center rounded-full bg-[#9a7b78] px-2 text-xs font-semibold text-black' : 'flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-xs font-medium text-neutral-500'" (click)="onPageChange(pageNumber)">{{ pageNumber }}</button> }
+        <button type="button" (click)="onPageChange(page() + 1)" [disabled]="page() >= totalPages()" aria-label="Next page" class="flex h-7 w-7 items-center justify-center rounded-full text-neutral-500 disabled:pointer-events-none disabled:opacity-30"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-4 w-4" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg></button>
       </div>
     }
-  }
-</div>
+  </div>
+}

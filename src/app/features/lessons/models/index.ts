@@ -1,13 +1,15 @@
 export interface LessonListResponse {
   id: string;
   title: string;
-  topicTitle: String;
+  topicTitle: string;
   slug: string;
   difficulty: number;
   readingTimeMinutes: number;
   displayOrder: number;
   isPublished: boolean;
   topicId: string;
+  isEmbedded: boolean;
+  embeddingsGeneratedAt: string | null;
 }
 
 export interface LessonResponse {
@@ -22,6 +24,8 @@ export interface LessonResponse {
   displayOrder: number;
   isPublished: boolean;
   isBookmarked: boolean;
+  isEmbedded: boolean;
+  embeddingsGeneratedAt: string | null;
 }
 
 export interface CreateLessonRequest {

@@ -87,29 +87,25 @@ export class LessonPage implements OnInit {
       if (order === 'title-asc') {
         return a.title.localeCompare(b.title);
       }
-
       if (order === 'title-desc') {
         return b.title.localeCompare(a.title);
       }
-
       return 0;
     });
   });
 
-  pageNumbers = computed(() =>
-    Array.from({ length: this.totalPages() }, (_, i) => i + 1),
-  );
+  pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
 
   subjectItems = computed<HorizontalSelectorItem[]>(() =>
-    this.subjects().map(x => ({ id: x.id, label: x.name }))
+    this.subjects().map((x) => ({ id: x.id, label: x.name })),
   );
 
   chapterItems = computed<HorizontalSelectorItem[]>(() =>
-    this.chapters().map(x => ({ id: x.id, label: x.title }))
+    this.chapters().map((x) => ({ id: x.id, label: x.title })),
   );
 
   topicItems = computed<HorizontalSelectorItem[]>(() =>
-    this.topics().map(x => ({ id: x.id, label: x.title }))
+    this.topics().map((x) => ({ id: x.id, label: x.title })),
   );
 
   ngOnInit(): void {
@@ -124,6 +120,18 @@ export class LessonPage implements OnInit {
     }
   }
 
+  // embedding generation
+  generateEmbedding(lesson: LessonListResponse): void {
+    this.lessonService.generateEmbedding(lesson.id).subscribe({
+      next: () => {
+        this.loadLessons(); 
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+  
   loadTopics(): void {
     this.topicService
       .getTopics({
@@ -241,7 +249,7 @@ export class LessonPage implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          console.log(response, "les res ---");
+          console.log(response, 'les res ---');
           const result = response.data;
           this.lessonStore.setLessons(result?.items ?? []);
           this.totalCount.set(result?.totalCount ?? 0);
@@ -254,11 +262,11 @@ export class LessonPage implements OnInit {
       });
   }
 
- onSearch(query: string): void {
-  this.search.set(query);
-  this.page.set(1);
-  this.loadLessons(query);
-}
+  onSearch(query: string): void {
+    this.search.set(query);
+    this.page.set(1);
+    this.loadLessons(query);
+  }
 
   onSort(order: string): void {
     this.sortOrder.set(order);
@@ -298,27 +306,27 @@ export class LessonPage implements OnInit {
     if (confirm(`Are you sure you want to delete ${lesson.title}?`)) {
       this.lessonService.deleteLesson(lesson.id).subscribe({
         next: () => {
-this.loadLessons(this.search());
+          this.loadLessons(this.search());
         },
       });
     }
   }
   onSubjectChange(item: HorizontalSelectorItem) {
-    const subject = this.subjects().find(x => x.id === item.id);
+    const subject = this.subjects().find((x) => x.id === item.id);
     if (!subject) return;
     this.subjectStore.selectedSubject.set(subject);
     this.page.set(1);
     this.loadChapters();
   }
   onChapterChange(item: HorizontalSelectorItem) {
-    const chapter = this.chapters().find(x => x.id === item.id);
+    const chapter = this.chapters().find((x) => x.id === item.id);
     if (!chapter) return;
     this.chapterStore.selectedChapter.set(chapter);
     this.page.set(1);
     this.loadTopics();
   }
   onTopicChange(item: HorizontalSelectorItem) {
-    const topic = this.topics().find(x => x.id === item.id);
+    const topic = this.topics().find((x) => x.id === item.id);
     if (!topic) return;
     this.topicStore.selectedTopic.set(topic);
     this.page.set(1);

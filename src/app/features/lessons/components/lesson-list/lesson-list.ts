@@ -22,6 +22,7 @@ export class LessonList {
   practiceQuestions = output<LessonListResponse>();
   moveUp = output<LessonListResponse>();
   moveDown = output<LessonListResponse>();
+  generateEmbedding = output<LessonListResponse>();
 
   topicTitle(topicId: string): string {
     return this.topics().find((topic) => topic.id === topicId)?.title ?? 'Unknown topic';

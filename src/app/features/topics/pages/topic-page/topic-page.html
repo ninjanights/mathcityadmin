@@ -30,9 +30,7 @@
 
     @if (loading()) {
       <div class="flex items-center justify-center py-12">
-        <p class="text-neutral-500 font-semibold animate-pulse dark:text-neutral-400">
-          Loading Topics...
-        </p>
+        <p class="font-semibold text-neutral-500 animate-pulse dark:text-neutral-400">Loading, please wait.</p>
       </div>
     } @else {
       <app-topic-list
@@ -55,9 +53,10 @@
               type="button"
               (click)="onPageChange(page() - 1)"
               [disabled]="page() <= 1"
-              class="rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+              aria-label="Previous page"
+              class="flex h-7 w-7 items-center justify-center rounded-full text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
             >
-              Prev
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-4 w-4" aria-hidden="true"><path d="m15 19-7-7 7-7" /></svg>
             </button>
 
             @for (p of pageNumbers(); track p) {
@@ -66,8 +65,8 @@
                 (click)="onPageChange(p)"
                 [class]="
                   page() === p
-                    ? 'rounded-lg px-3 py-1.5 text-xs font-semibold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
-                    : 'rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200'
+                    ? 'flex h-7 min-w-7 items-center justify-center rounded-full bg-[#9a7b78] px-2 text-xs font-semibold text-black'
+                    : 'flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200'
                 "
               >
                 {{ p }}
@@ -78,9 +77,10 @@
               type="button"
               (click)="onPageChange(page() + 1)"
               [disabled]="page() >= totalPages()"
-              class="rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+              aria-label="Next page"
+              class="flex h-7 w-7 items-center justify-center rounded-full text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
             >
-              Next
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-4 w-4" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
             </button>
           </div>
         </div>

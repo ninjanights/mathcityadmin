@@ -26,6 +26,8 @@ page = signal(1);
 pageSize = signal(10);
 totalCount = signal(0);
 search = signal('');
+  totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()));
+  pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, index) => index + 1));
   sortOrder = signal('title-asc');
   isCreating = signal(false);
   isEditing = signal(false);
@@ -79,6 +81,12 @@ loadTags(): void {
 
   onSort(order: string): void {
     this.sortOrder.set(order);
+  }
+
+  onPageChange(newPage: number): void {
+    if (newPage < 1 || newPage > this.totalPages()) return;
+    this.page.set(newPage);
+    this.loadTags();
   }
 
   onCreate(): void {

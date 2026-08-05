@@ -62,6 +62,7 @@ export class SubjectPage implements OnInit {
       pageSize: this.pageSize,
     }).subscribe({
       next: (response) => {
+        console.log(response, "4444");
         const items = response.data?.items ?? [];
         this.subjectStore.setSubjects(items);
         this.totalCount.set(response.data?.totalCount ?? 0);

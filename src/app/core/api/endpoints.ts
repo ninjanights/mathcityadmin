@@ -52,6 +52,9 @@ export const Endpoints = {
     delete: (id: string) => `/api/lessons/${id}`,
 
     move: (id: string) => `/api/lessons/${id}/move`,
+    // AI Embeddings
+    generateEmbedding: (lessonId: string) => `/api/embeddings/generate/${lessonId}`,
+
     resources: (lessonId: string) => `/api/lessons/${lessonId}/resources`,
     practiceQuestions: (lessonId: string) => `/api/lessons/${lessonId}/practicequestions`,
     movePracticeQuestion: (id: string) => `/api/practicequestions/${id}/move`,
@@ -69,24 +72,20 @@ export const Endpoints = {
     delete: (id: string) => `/api/lessonresources/${id}`,
     move: (id: string) => `/api/lessonresources/${id}/move`,
   },
-practiceQuestions: {
-  list: '/api/practicequestions',
-  create: '/api/practicequestions',
+  practiceQuestions: {
+    list: '/api/practicequestions',
+    create: '/api/practicequestions',
 
-  getById: (id: string) => `/api/practicequestions/${id}`,
+    getById: (id: string) => `/api/practicequestions/${id}`,
 
-  update: (id: string) => `/api/practicequestions/${id}`,
+    update: (id: string) => `/api/practicequestions/${id}`,
 
-  delete: (id: string) => `/api/practicequestions/${id}`,
+    delete: (id: string) => `/api/practicequestions/${id}`,
 
-  move: (id: string) => `/api/practicequestions/${id}/move`,
+    move: (id: string) => `/api/practicequestions/${id}/move`,
 
-  submit: '/api/practicequestions/submit',
+    submit: '/api/practicequestions/submit',
 
-  byLesson: (lessonId: string) =>
-    `/api/practicequestions/lesson/${lessonId}`,
-},
-
-
-
+    byLesson: (lessonId: string) => `/api/practicequestions/lesson/${lessonId}`,
+  },
 };

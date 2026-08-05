@@ -83,6 +83,14 @@ export class LessonService {
     );
   }
 
+
+  generateEmbedding(lessonId: string): Observable<void> {
+  return this.apiService.post<void>(
+    Endpoints.lessons.generateEmbedding(lessonId),
+    {},
+  );
+}
+
   moveLesson(id: string, direction: 'Up' | 'Down'): Observable<void> {
     return this.apiService.patch<void>(Endpoints.lessons.move(id), { direction });
   }

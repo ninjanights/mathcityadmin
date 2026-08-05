@@ -14,7 +14,7 @@ export class LessonCard {
 
   edit = output<LessonListResponse>();
   delete = output<LessonListResponse>();
-
+generateEmbedding = output<LessonListResponse>();
   lessonTags = output<LessonListResponse>();
   lessonResources = output<LessonListResponse>();
   practiceQuestions = output<LessonListResponse>();

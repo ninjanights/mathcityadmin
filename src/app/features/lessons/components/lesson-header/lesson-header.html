@@ -22,7 +22,7 @@
         (click)="setSort('asc')"
         [class]="
           sortDirection === 'asc'
-            ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-pink-400 transition dark:bg-neutral-800'
+            ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-[#9a7b78] transition dark:bg-neutral-800'
             : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
         "
       >
@@ -36,7 +36,7 @@
         (click)="setSort('desc')"
         [class]="
           sortDirection === 'desc'
-            ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-pink-400 transition dark:bg-neutral-800'
+            ? 'rounded-full bg-neutral-200 px-4 py-1.5 text-[#9a7b78] transition dark:bg-neutral-800'
             : 'rounded-full px-4 py-1.5 text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200'
         "
       >
@@ -47,7 +47,7 @@
     <button
       type="button"
       (click)="create.emit()"
-      class="cursor-pointer rounded-full bg-pink-400 px-5 py-2 text-sm font-bold text-black transition hover:bg-pink-400"
+      class="cursor-pointer rounded-full bg-[#9a7b78] px-5 py-2 text-sm font-bold text-black transition hover:bg-[#9a7b78]"
     >
       + Add Lesson
     </button>

@@ -1,5 +1,5 @@
 @if (lessons().length) {
-  <div class="flex flex-col gap-2 mt-2">
+  <div class="flex flex-col gap-2">
     @for (lesson of lessons(); track lesson.id) {
       <app-lesson-card
         [lesson]="lesson"
@@ -11,6 +11,7 @@
         (practiceQuestions)="practiceQuestions.emit($event)"
         (moveUp)="moveUp.emit($event)"
         (moveDown)="moveDown.emit($event)"
+        (generateEmbedding)="generateEmbedding.emit($event)"
       >
       </app-lesson-card>
     }

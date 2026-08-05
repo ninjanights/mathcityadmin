@@ -1,118 +1,41 @@
-<form
-  [formGroup]="form"
-  (ngSubmit)="submit()"
-  class="space-y-5"
->
-  <div>
-    <label>Question</label>
-
-    <textarea
-      rows="3"
-      formControlName="question"
-      class="w-full rounded border p-2"
-    ></textarea>
+<div class="rounded-3xl bg-neutral-200 p-6 dark:bg-neutral-800">
+  <div class="mb-8">
+    <button type="button" (click)="cancel.emit()" class="mb-6 flex items-center gap-2 text-sm font-medium text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-300">
+      <span class="material-symbols-outlined text-base">arrow_back_ios_new</span>
+      Back to Practice Questions
+    </button>
+    <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ question() ? 'Edit Practice Question' : 'Create Practice Question' }}</h1>
   </div>
 
-  <div>
-    <label>Option A</label>
-
-    <input
-      class="w-full rounded border p-2"
-      formControlName="optionA"
-    />
-  </div>
-
-  <div>
-    <label>Option B</label>
-
-    <input
-      class="w-full rounded border p-2"
-      formControlName="optionB"
-    />
-  </div>
-
-  <div>
-    <label>Option C</label>
-
-    <input
-      class="w-full rounded border p-2"
-      formControlName="optionC"
-    />
-  </div>
-
-  <div>
-    <label>Option D</label>
-
-    <input
-      class="w-full rounded border p-2"
-      formControlName="optionD"
-    />
-  </div>
-
-  <div>
-    <label>Correct Answer</label>
-
-    <select
-      formControlName="correctAnswer"
-      class="w-full rounded border p-2"
-    >
-      <option [value]="1">A</option>
-      <option [value]="2">B</option>
-      <option [value]="3">C</option>
-      <option [value]="4">D</option>
-    </select>
-  </div>
-
-  <div>
-    <label>Explanation</label>
-
-    <textarea
-      rows="4"
-      formControlName="explanation"
-      class="w-full rounded border p-2"
-    ></textarea>
-  </div>
-
-  <div>
-    <label>Difficulty</label>
-
-    <div class="flex gap-2 mt-2">
-      <button
-        type="button"
-        (click)="selectDifficulty(1)"
-      >
-        Beginner
-      </button>
-
-      <button
-        type="button"
-        (click)="selectDifficulty(2)"
-      >
-        Intermediate
-      </button>
-
-      <button
-        type="button"
-        (click)="selectDifficulty(3)"
-      >
-        Advanced
-      </button>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="max-w-5xl space-y-6">
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Question</label>
+      <textarea rows="3" formControlName="question" class="w-full resize-y rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100"></textarea>
     </div>
-  </div>
 
-  <div class="flex gap-3">
-    <button
-      type="submit"
-      [disabled]="saving()"
-    >
-      Save
-    </button>
+    <div class="grid gap-5 md:grid-cols-2">
+      <div><label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Option A</label><input formControlName="optionA" class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100" /></div>
+      <div><label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Option B</label><input formControlName="optionB" class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100" /></div>
+      <div><label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Option C</label><input formControlName="optionC" class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100" /></div>
+      <div><label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Option D</label><input formControlName="optionD" class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100" /></div>
+    </div>
 
-    <button
-      type="button"
-      (click)="cancel.emit()"
-    >
-      Cancel
-    </button>
-  </div>
-</form>
+    <div class="grid gap-5 md:grid-cols-2">
+      <div>
+        <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Correct Answer</label>
+        <select formControlName="correctAnswer" class="w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100"><option [value]="1">Option A</option><option [value]="2">Option B</option><option [value]="3">Option C</option><option [value]="4">Option D</option></select>
+      </div>
+      <div>
+        <label class="mb-3 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Difficulty</label>
+        <div class="flex gap-2"><button type="button" (click)="selectDifficulty(1)" class="rounded-full bg-neutral-100 px-4 py-2 text-sm text-neutral-500 dark:bg-[#313131]">Beginner</button><button type="button" (click)="selectDifficulty(2)" class="rounded-full bg-neutral-100 px-4 py-2 text-sm text-neutral-500 dark:bg-[#313131]">Intermediate</button><button type="button" (click)="selectDifficulty(3)" class="rounded-full bg-neutral-100 px-4 py-2 text-sm text-neutral-500 dark:bg-[#313131]">Advanced</button></div>
+      </div>
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-neutral-500 dark:text-neutral-400">Explanation</label>
+      <textarea rows="4" formControlName="explanation" class="w-full resize-y rounded-xl bg-neutral-100 px-4 py-3 text-neutral-900 outline-none dark:bg-[#313131] dark:text-neutral-100"></textarea>
+    </div>
+
+    <div class="flex justify-end gap-4 pt-8"><button type="button" (click)="cancel.emit()" [disabled]="saving()" class="rounded-full px-6 py-3 text-sm font-semibold text-neutral-500">Cancel</button><button type="submit" [disabled]="saving()" class="rounded-full bg-[#9a7b78] px-8 py-3 text-sm font-bold text-black disabled:opacity-50">{{ saving() ? 'Saving...' : question() ? 'Save Question' : 'Create Question' }}</button></div>
+  </form>
+</div>

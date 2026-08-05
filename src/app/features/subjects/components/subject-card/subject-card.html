@@ -6,10 +6,14 @@
       <div class="flex items-center gap-3">
         <!-- Icon -->
         <span class="material-symbols-outlined text-xl shrink-0" [style.color]="subject().color">
-          {{ subject().icon || 'school' }}
+          {{ displayIcon(subject().icon) }}
         </span>
 
         <div class="flex items-baseline gap-3">
+          <span class="text-sm font-bold text-neutral-500 dark:text-neutral-400">
+            #{{ subject().displayOrder }}
+          </span>
+
           <!-- Name -->
           <h3 class="font-semibold text-neutral-900 dark:text-neutral-100">
             {{ subject().name }}
@@ -25,7 +29,7 @@
           <div class="flex items-center gap-2">
             <span
               class="text-xs"
-              [class.text-pink-400]="subject().isPublished"
+              [class.text-[#9a7b78]]="subject().isPublished"
               [class.text-neutral-400]="!subject().isPublished"
             >
               {{ subject().isPublished ? 'Live' : 'Draft' }}
@@ -44,26 +48,32 @@
 
     <!-- Right -->
     <div class="flex items-center gap-5">
+      <div class="flex items-stretch divide-x divide-neutral-300 dark:divide-neutral-700">
+        <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+          <span class="text-xl font-extrabold leading-none text-neutral-900 dark:text-neutral-100">{{ subject().chapterCount }}</span>
+          <span class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Chapters</span>
+        </div>
+        <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+          <span class="text-xl font-extrabold leading-none text-neutral-900 dark:text-neutral-100">{{ subject().topicCount }}</span>
+          <span class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Topics</span>
+        </div>
+        <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+          <span class="text-xl font-extrabold leading-none text-neutral-900 dark:text-neutral-100">{{ subject().lessonCount }}</span>
+          <span class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Lessons</span>
+        </div>
+        <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+          <span class="text-xl font-extrabold leading-none text-neutral-900 dark:text-neutral-100">{{ subject().lessonResourceCount }}</span>
+          <span class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Resources</span>
+        </div>
+        <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+          <span class="text-xl font-extrabold leading-none text-neutral-900 dark:text-neutral-100">{{ subject().practiceQuestionCount }}</span>
+          <span class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Questions</span>
+        </div>
+      </div>
+
       <div class="h-4 w-4 rounded-full border border-neutral-200 dark:border-neutral-700"
         [style.background]="subject().color"
       ></div>
-
-      <div class="flex items-center gap-1">
-        <button
-          type="button"
-          (click)="moveUp.emit(subject())"
-          class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
-        >
-          Up
-        </button>
-        <button
-          type="button"
-          (click)="moveDown.emit(subject())"
-          class="rounded-lg px-2.5 py-1 text-xs font-medium text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
-        >
-          Down
-        </button>
-      </div>
 
       <button
         type="button"
@@ -88,6 +98,29 @@
       >
         Delete
       </button>
+
+      <div class="flex flex-col">
+        <button
+          type="button"
+          (click)="moveUp.emit(subject())"
+          aria-label="Move subject up"
+          class="flex h-7 w-8 items-center justify-center text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+            <path d="M12 19V5m-6 6 6-6 6 6" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          (click)="moveDown.emit(subject())"
+          aria-label="Move subject down"
+          class="flex h-7 w-8 items-center justify-center text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-[#313131] dark:hover:text-neutral-200"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+            <path d="M12 5v14m6-6-6 6-6-6" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>

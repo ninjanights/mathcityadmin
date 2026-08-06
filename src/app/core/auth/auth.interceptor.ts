@@ -1,21 +1,63 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+
 import { inject } from '@angular/core';
+
+import { catchError, switchMap, throwError } from 'rxjs';
+
 import { TokenService } from './token.service';
+import { AuthService } from './auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
+  const authService = inject(AuthService);
 
-  const token = tokenService.getAccessToken();
+  const accessToken = tokenService.getAccessToken();
 
-  if (!token) {
-    return next(req);
-  }
+  const authReq = accessToken
+    ? req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+    : req;
 
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return next(authReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status !== 401) {
+        return throwError(() => error);
+      }
 
-  return next(authReq);
+      const refreshToken = tokenService.getRefreshToken();
+
+      if (!accessToken || !refreshToken) {
+        tokenService.clear();
+        return throwError(() => error);
+      }
+
+      return authService
+        .refresh({
+          accessToken,
+          refreshToken,
+        })
+        .pipe(
+          switchMap((response) => {
+            tokenService.updateTokens(response);
+
+            const retry = req.clone({
+              setHeaders: {
+                Authorization: `Bearer ${response.accessToken}`,
+              },
+            });
+
+            return next(retry);
+          }),
+
+          catchError((err) => {
+            tokenService.clear();
+
+            return throwError(() => err);
+          }),
+        );
+    }),
+  );
 };

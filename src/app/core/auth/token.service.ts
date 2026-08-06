@@ -46,6 +46,18 @@ export class TokenService {
     return !!this.getAccessToken();
   }
 
+  updateTokens(response: LoginResponse): void {
+  localStorage.setItem(
+    this.ACCESS_TOKEN_KEY,
+    response.accessToken
+  );
+
+  localStorage.setItem(
+    this.REFRESH_TOKEN_KEY,
+    response.refreshToken
+  );
+}
+
   // Logout
   clear(): void {
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);

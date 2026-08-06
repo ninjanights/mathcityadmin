@@ -1,49 +1,37 @@
 <div
   class="cursor-pointer rounded-3xl bg-neutral-200 px-5 py-3 transition-colors duration-200 dark:bg-neutral-800"
 >
-  <div class="flex items-start justify-between gap-6">
-
+  <div class="flex items-center justify-between gap-6">
     <!-- Left -->
     <div class="min-w-0 flex-1">
-
       <!-- Top Row -->
       <div class="flex flex-wrap items-center gap-3">
+        <span class="material-symbols-outlined text-[#9a7b78]"> school </span>
 
-        <span class="material-symbols-outlined text-[#9a7b78]">
-          school
-        </span>
-
-        <!-- Display Order -->
         <span class="font-mono text-xs font-semibold text-neutral-500">
           #{{ lesson().displayOrder }}
         </span>
 
         <span class="text-neutral-400">•</span>
 
-        <!-- Lesson -->
         <h3 class="truncate font-semibold text-neutral-900 dark:text-neutral-100">
           {{ lesson().title }}
         </h3>
 
         <span class="text-neutral-400">•</span>
 
-        <!-- Slug -->
-        <span
-          class="font-mono text-xs text-neutral-500 dark:text-neutral-400"
-        >
+        <span class="font-mono text-xs text-neutral-500 dark:text-neutral-400">
           /{{ lesson().slug }}
         </span>
 
         <span class="text-neutral-400">•</span>
 
-        <!-- Topic -->
         <span class="text-sm text-neutral-500 dark:text-neutral-400">
           {{ lesson().topicTitle }}
         </span>
 
         <span class="text-neutral-400">•</span>
 
-        <!-- Status -->
         <span
           class="rounded-full px-2.5 py-1 text-[11px] font-semibold"
           [class.bg-green-500/10]="lesson().isPublished"
@@ -53,103 +41,131 @@
         >
           {{ lesson().isPublished ? 'Live' : 'Draft' }}
         </span>
-
       </div>
 
       <!-- Bottom Row -->
-      <div
-        class="ml-9 mt-2 flex items-center gap-6 text-xs text-neutral-500 dark:text-neutral-400"
-      >
+      <div class="ml-9 mt-2 flex items-center gap-6 text-xs text-neutral-500 dark:text-neutral-400">
         <span>{{ difficultyLabel(lesson().difficulty) }}</span>
-
         <span>{{ lesson().readingTimeMinutes }} Minutes</span>
       </div>
-
     </div>
 
-    <!-- Right -->
-    <div class="flex items-center gap-2">
-
-      <button
-        type="button"
-        (click)="lessonTags.emit(lesson())"
-        class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-400 transition hover:bg-neutral-500"
-      >
-        Tags
-      </button>
-
-      <button
-        type="button"
-        (click)="lessonResources.emit(lesson())"
-        class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-400 transition hover:bg-neutral-500"
-      >
-        Resources
-      </button>
-
-      <button
-        type="button"
-        (click)="practiceQuestions.emit(lesson())"
-        class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-400 transition hover:bg-neutral-500"
-      >
-        Questions
-      </button>
-
-
-      <!-- Embedding Status -->
-<div class="flex items-center gap-2">
-
-  <span
-    class="rounded-full px-2.5 py-1 text-[11px] font-semibold"
-    [class.bg-green-500/10]="lesson().isEmbedded"
-    [class.text-green-500]="lesson().isEmbedded"
-    [class.bg-neutral-500/10]="!lesson().isEmbedded"
-    [class.text-neutral-500]="!lesson().isEmbedded"
-  >
-    {{ lesson().isEmbedded ? '✓ Embedded' : 'Not Embedded' }}
-  </span>
-
+    <!-- Center: Stats -->
+    <div class="flex items-stretch justify-end divide-x divide-neutral-300 dark:divide-neutral-700">
+      <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+        <span class="text-xl font-extrabold leading-none text-neutral-900
+         dark:text-neutral-100">{{ lesson().resourceCount }}</span>
+        <span class="mt-1 text-[10px] text-neutral-500 dark:text-neutral-400">Study Materials</span>
+      </div>
+      <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+        <span class="text-xl font-extrabold leading-none text-neutral-900
+         dark:text-neutral-100">{{ lesson().practiceQuestionCount }}</span>
+        <span class="mt-1 text-[10px] text-neutral-500 dark:text-neutral-400">Practice Questions</span>
+      </div>
+      <div class="flex w-20 flex-col items-center justify-center px-2 text-center">
+        <span class="text-xl font-extrabold leading-none text-neutral-900
+         dark:text-neutral-100">{{ lesson().tagCount }}</span>
+        <span class="mt-1 text-[10px] text-neutral-500 dark:text-neutral-400">Connected Tags</span>
+      </div>
+    </div>
+<div class="flex flex-col items-center gap-1">
+ 
+  <!-- Embedding Badge -->
   <button
     type="button"
-    (click)="generateEmbedding.emit(lesson())"
+    (click)="!lesson().isEmbedded && 
+    generateEmbedding.emit(lesson())"
     [disabled]="lesson().isEmbedded"
-    class="rounded-full bg-neutral-700 px-3 py-1 text-xs font-medium transition
-           disabled:cursor-not-allowed
-           disabled:opacity-40
-           hover:bg-neutral-600"
+    [attr.aria-label]="lesson().isEmbedded ? 'Embedded' : 
+    'Generate embedding'"
+    class="group relative flex h-24 w-24 shrink-0 
+    flex-col items-center justify-center rounded-full 
+    transition disabled:cursor-default"
+    [class.text-teal-600]="lesson().isEmbedded"
+    [class.text-neutral-500]="!lesson().isEmbedded"
+    [class.dark:text-neutral-400]="!lesson().isEmbedded"
+    [class.hover:text-neutral-900]="!lesson().isEmbedded"
+    [class.dark:hover:text-neutral-200]="!lesson().isEmbedded"
   >
-    &lt;/&gt; Generate
+    <svg viewBox="0 0 100 90" class="absolute inset-0 
+    h-full w-full">
+      <defs>
+        <path [attr.id]="'topArc-' + lesson().slug" d="M 8 50 A 42 42 0 0 1 92 50" fill="none" />
+      </defs>
+
+      <!-- side dots -->
+      <circle cx="8" cy="50" r="1.8" fill="currentColor" />
+      <circle cx="92" cy="50" r="1.8" fill="currentColor" />
+
+      <!-- arched label -->
+      <text font-size="11" font-weight="800" letter-spacing="1.5" fill="currentColor">
+        <textPath [attr.href]="'#topArc-' + lesson().slug" startOffset="50%" text-anchor="middle">
+          {{ lesson().isEmbedded ? 'EMBEDDED' : 'NOT EMBEDDED' }}
+        </textPath>
+      </text>
+    </svg>
+
+    <!-- center icon -->
+    <span class="mt-3 font-mono text-sm font-bold leading-none">&lt;/&gt;</span>
+
+    <!-- straight bottom text: time or Generate -->
+    <span class="mt-2 text-[12px] font-semibold leading-none">
+      {{ lesson().embeddingsGeneratedAt ? (lesson().embeddingsGeneratedAt | date: 'MMM d') : 'Generate' }}
+    </span>
   </button>
+
+ <!-- Divider -->
+  <div class="h-px w-14 bg-neutral-300 
+  dark:bg-neutral-700"></div>
+
+   <!-- Edit / Delete -->
+  <div class="flex items-center gap-4">
+    <button
+      type="button"
+      (click)="edit.emit(lesson())"
+      class="text-sm text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
+    >
+      Edit
+    </button>
+
+    <button
+      type="button"
+      (click)="delete.emit(lesson())"
+      class="text-sm text-red-500 transition hover:text-red-400"
+    >
+      Delete
+    </button>
+  </div>
+
+ 
+
+
+
 
 </div>
 
+    <!-- Move Up / Down -->
+    <div class="flex flex-col">
       <button
         type="button"
-        (click)="edit.emit(lesson())"
-        class="text-sm text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
+        (click)="moveUp.emit(lesson())"
+        aria-label="Move lesson up"
+        class="flex h-6 w-7 items-center justify-center text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-200"
       >
-        Edit
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+          <path d="M12 19V5m-6 6 6-6 6 6" />
+        </svg>
       </button>
-
-
-
       <button
         type="button"
-        (click)="delete.emit(lesson())"
-        class="text-sm text-red-500 transition hover:text-red-400"
+        (click)="moveDown.emit(lesson())"
+        aria-label="Move lesson down"
+        class="flex h-6 w-7 items-center justify-center text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-200"
       >
-        Delete
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+          <path d="M12 5v14m6-6-6 6-6-6" />
+        </svg>
       </button>
-
-      <div class="flex flex-col">
-        <button type="button" (click)="moveUp.emit(lesson())" aria-label="Move lesson up" class="flex h-6 w-7 items-center justify-center text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-200">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6" /></svg>
-        </button>
-        <button type="button" (click)="moveDown.emit(lesson())" aria-label="Move lesson down" class="flex h-6 w-7 items-center justify-center text-neutral-500 transition hover:text-neutral-900 dark:hover:text-neutral-200">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true"><path d="M12 5v14m6-6-6 6-6-6" /></svg>
-        </button>
-      </div>
-
     </div>
-
   </div>
 </div>

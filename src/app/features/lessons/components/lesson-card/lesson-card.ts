@@ -1,10 +1,12 @@
 import { Component, input, output } from '@angular/core';
 
+import { DatePipe } from '@angular/common';
 import { LessonListResponse } from '../../models';
 
 @Component({
   selector: 'app-lesson-card',
   standalone: true,
+   imports: [DatePipe],
   templateUrl: './lesson-card.html',
 })
 export class LessonCard {

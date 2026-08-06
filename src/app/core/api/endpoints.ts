@@ -88,4 +88,10 @@ export const Endpoints = {
 
     byLesson: (lessonId: string) => `/api/practicequestions/lesson/${lessonId}`,
   },
+
+
+ai: {
+    chat: '/api/chat'
+}
+
 };

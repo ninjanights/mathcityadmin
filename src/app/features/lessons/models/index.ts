@@ -10,6 +10,9 @@ export interface LessonListResponse {
   topicId: string;
   isEmbedded: boolean;
   embeddingsGeneratedAt: string | null;
+  tagCount: number;
+  resourceCount: number;
+  practiceQuestionCount: number;
 }
 
 export interface LessonResponse {
@@ -26,6 +29,9 @@ export interface LessonResponse {
   isBookmarked: boolean;
   isEmbedded: boolean;
   embeddingsGeneratedAt: string | null;
+  tagCount: number;
+  resourceCount: number;
+  practiceQuestionCount: number;
 }
 
 export interface CreateLessonRequest {

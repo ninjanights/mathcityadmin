@@ -1,0 +1,131 @@
+@if (!open()) {
+
+<button
+  (click)="toggle()"
+  class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-xl transition hover:scale-105 hover:bg-blue-700">
+
+  AI
+
+</button>
+
+}
+
+@if (open()) {
+
+<div
+  class="fixed bottom-24 right-6 z-50 flex h-[560px] w-[380px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
+
+  <!-- Header -->
+  <div
+    class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+
+    <div>
+      <h3 class="font-semibold text-gray-900">
+        MathCity AI
+      </h3>
+
+      <p class="text-xs text-gray-500">
+        Ask anything
+      </p>
+    </div>
+
+    <button
+      (click)="toggle()"
+      class="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700">
+
+      ✕
+
+    </button>
+
+  </div>
+
+  <!-- Body -->
+  <div
+    class="flex flex-1 flex-col gap-3 overflow-y-auto bg-gray-50 p-4">
+
+    @if (hasMore()) {
+
+      <div class="flex justify-center">
+
+        <button
+          (click)="loadMore()"
+          class="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-gray-600 transition hover:bg-gray-100">
+
+          Load previous messages
+
+        </button>
+
+      </div>
+
+    }
+
+    @if (!hasMessages()) {
+
+      <div
+        class="flex flex-1 items-center justify-center text-center text-sm text-gray-400">
+
+        👋 Ask me anything about MathCity.
+
+      </div>
+
+    } @else {
+
+      @for (message of messages(); track message.id) {
+
+        <div
+          class="max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm"
+
+          [class.ml-auto]="message.role === 'User'"
+          [class.bg-blue-600]="message.role === 'User'"
+          [class.text-white]="message.role === 'User'"
+
+          [class.bg-white]="message.role === 'Assistant'"
+          [class.text-gray-800]="message.role === 'Assistant'"
+          [class.border]="message.role === 'Assistant'"
+          [class.border-gray-200]="message.role === 'Assistant'">
+
+          {{ message.message }}
+
+        </div>
+
+      }
+
+    }
+
+    @if (loading()) {
+
+      <div
+        class="max-w-[80%] rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500 shadow-sm">
+
+        Thinking...
+
+      </div>
+
+    }
+
+  </div>
+
+  <!-- Footer -->
+  <div
+    class="flex items-center gap-3 border-t border-gray-200 bg-white p-4">
+
+    <input
+      [(ngModel)]="message"
+      (keydown.enter)="send()"
+      placeholder="Ask anything..."
+      class="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" />
+
+    <button
+      (click)="send()"
+      [disabled]="loading() || !message.trim()"
+      class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
+
+      Send
+
+    </button>
+
+  </div>
+
+</div>
+
+}

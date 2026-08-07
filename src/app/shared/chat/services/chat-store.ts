@@ -18,7 +18,7 @@ export class ChatStore {
 
   readonly isOpen = signal(false);
 
-  readonly context = signal<SearchContext>(SearchContext.Global);
+  readonly context = signal(SearchContext.Global);
 
   readonly lessonId = signal<string | undefined>(undefined);
 
@@ -30,8 +30,20 @@ export class ChatStore {
 
   readonly messageCount = computed(() => this.messages().length);
 
+  readonly hasMore = signal(false);
+
+  readonly nextCursor = signal<string | null>(null);
+
+  // -------------------------
+  // Chat Window
+  // -------------------------
+
   open() {
+    if (this.isOpen()) return;
+
     this.isOpen.set(true);
+
+    this.loadHistory();
   }
 
   close() {
@@ -39,90 +51,154 @@ export class ChatStore {
   }
 
   toggle() {
-    this.isOpen.update((v) => !v);
+    if (this.isOpen()) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 
   clear() {
-  this.messages.set([]);
-}
-setContext(
-  context: SearchContext,
-  lessonId?: string,
-  topicId?: string,
-  chapterId?: string
-) {
-  this.context.set(context);
+    this.messages.set([]);
+    this.hasMore.set(false);
+    this.nextCursor.set(null);
+  }
 
-  this.lessonId.set(lessonId);
+  // -------------------------
+  // Context
+  // -------------------------
 
-  this.topicId.set(topicId);
+  setContext(
+    context: SearchContext,
+    lessonId?: string,
+    topicId?: string,
+    chapterId?: string
+  ) {
+    if (
+      this.context() === context &&
+      this.lessonId() === lessonId &&
+      this.topicId() === topicId &&
+      this.chapterId() === chapterId
+    ) {
+      return;
+    }
 
-  this.chapterId.set(chapterId);
-}
+    this.context.set(context);
+    this.lessonId.set(lessonId);
+    this.topicId.set(topicId);
+    this.chapterId.set(chapterId);
 
-send(question: string) {
+    this.clear();
 
-  const userMessage: ChatMessage = {
-    role: 'user',
-    message: question,
-    createdAt: new Date(),
-    context: this.context(),
-    lessonId: this.lessonId(),
-    topicId: this.topicId(),
-    chapterId: this.chapterId(),
-  };
+    if (this.isOpen()) {
+      this.loadHistory();
+    }
+  }
 
-  this.messages.update(messages => [...messages, userMessage]);
+  // -------------------------
+  // History
+  // -------------------------
 
-  this.isLoading.set(true);
+  loadHistory() {
+    this.chatService.getHistory().subscribe({
+      next: (response) => {
+        this.messages.set(response.data.messages);
 
-  const request: ChatRequest = {
-    question,
-    context: this.context(),
-    lessonId: this.lessonId(),
-    topicId: this.topicId(),
-    chapterId: this.chapterId(),
-    topK: 5,
-  };
+        this.hasMore.set(response.data.hasMore);
 
-  this.chatService.ask(request).subscribe({
-    next: (response) => {
+        this.nextCursor.set(response.data.nextCursor ?? null);
+      },
+    });
+  }
 
-      this.messages.update(messages => [
-        ...messages,
-        {
-          role: 'assistant',
+  loadMore() {
+    if (!this.hasMore()) return;
+
+    const cursor = this.nextCursor();
+
+    if (!cursor) return;
+
+    this.chatService.getHistory(cursor).subscribe({
+      next: (response) => {
+        this.messages.update(messages => [
+          ...response.data.messages,
+          ...messages,
+        ]);
+
+        this.hasMore.set(response.data.hasMore);
+
+        this.nextCursor.set(response.data.nextCursor ?? null);
+      },
+    });
+  }
+
+  // -------------------------
+  // Send Message
+  // -------------------------
+
+  send(question: string) {
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: 'User',
+      message: question,
+      createdAt: new Date().toISOString(),
+      context: this.context(),
+      lessonId: this.lessonId(),
+      topicId: this.topicId(),
+      chapterId: this.chapterId(),
+    };
+
+    this.messages.update(messages => [...messages, userMessage]);
+
+    this.isLoading.set(true);
+
+    const request: ChatRequest = {
+      question,
+      context: this.context(),
+      lessonId: this.lessonId(),
+      topicId: this.topicId(),
+      chapterId: this.chapterId(),
+      topK: 5,
+    };
+
+    this.chatService.ask(request).subscribe({
+      next: (response) => {
+        const assistantMessage: ChatMessage = {
+          id: crypto.randomUUID(),
+          role: 'Assistant',
           message: response.data.answer,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
           context: this.context(),
           lessonId: this.lessonId(),
           topicId: this.topicId(),
           chapterId: this.chapterId(),
-        }
-      ]);
+        };
 
-      this.isLoading.set(false);
-    },
+        this.messages.update(messages => [
+          ...messages,
+          assistantMessage,
+        ]);
 
-    error: () => {
+        this.isLoading.set(false);
+      },
 
-      this.isLoading.set(false);
+      error: () => {
+        this.messages.update(messages => [
+          ...messages,
+          {
+            id: crypto.randomUUID(),
+            role: 'Assistant',
+            message: 'Something went wrong.',
+            createdAt: new Date().toISOString(),
+            context: this.context(),
+            lessonId: this.lessonId(),
+            topicId: this.topicId(),
+            chapterId: this.chapterId(),
+          },
+        ]);
 
-      this.messages.update(messages => [
-        ...messages,
-        {
-          role: 'assistant',
-          message: 'Something went wrong.',
-          createdAt: new Date(),
-          context: this.context(),
-        }
-      ]);
-    }
-  });
-
-}
-
-
-
-
+        this.isLoading.set(false);
+      },
+    });
+  }
 }

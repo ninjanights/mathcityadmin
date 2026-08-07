@@ -1,11 +1,12 @@
-import { SearchContext } from "./search-context";
+import { SearchContext } from './search-context';
 export interface ChatMessage {
+  id: string;
 
-  role: 'user' | 'assistant';
+  role: 'User' | 'Assistant';
 
   message: string;
 
-  createdAt: Date;
+  createdAt: string | Date;
 
   context: SearchContext;
 

@@ -91,7 +91,8 @@ export const Endpoints = {
 
 
 ai: {
-    chat: '/api/chat'
+    chat: '/api/chat',
+      history: '/api/chat'
 }
 
 };

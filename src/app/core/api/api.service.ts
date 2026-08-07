@@ -10,9 +10,17 @@ export class ApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = AppConfig.apiUrl;
 
-  post<T>(endpoint: string, body: unknown): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}${endpoint}`, body);
-  }
+ post<T>(
+  endpoint: string,
+  body: unknown,
+  options?: object
+): Observable<T> {
+  return this.http.post<T>(
+    `${this.baseUrl}${endpoint}`,
+    body,
+    options
+  );
+}
 
   get<T>(endpoint: string): Observable<T> {
     return this.http.get<T>(`${this.baseUrl}${endpoint}`);

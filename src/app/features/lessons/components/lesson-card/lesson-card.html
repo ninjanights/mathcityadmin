@@ -81,7 +81,7 @@
     class="group relative flex h-24 w-24 shrink-0 
     flex-col items-center justify-center rounded-full 
     transition disabled:cursor-default"
-    [class.text-teal-600]="lesson().isEmbedded"
+    [class.text-teal-800]="lesson().isEmbedded"
     [class.text-neutral-500]="!lesson().isEmbedded"
     [class.dark:text-neutral-400]="!lesson().isEmbedded"
     [class.hover:text-neutral-900]="!lesson().isEmbedded"
@@ -131,7 +131,7 @@
     <button
       type="button"
       (click)="delete.emit(lesson())"
-      class="text-sm text-red-500 transition hover:text-red-400"
+      class="text-sm text-red-700 transition hover:text-red-400"
     >
       Delete
     </button>
